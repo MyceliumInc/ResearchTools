@@ -29,7 +29,7 @@ fn truncate(s: &str, max: usize) -> String {
 }
 
 async fn fetch_text(url: &str, user_agent: &str, accept: Option<&str>) -> Result<(u16, String)> {
-    let mut headers = Headers::new();
+    let headers = Headers::new();
     headers.set("User-Agent", user_agent)?;
     if let Some(a) = accept {
         headers.set("Accept", a)?;

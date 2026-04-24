@@ -87,7 +87,7 @@ pub async fn run(mut req: Request) -> Result<Response> {
     let limit = body.limit.unwrap_or(8).clamp(1, 25);
     let form = format!("q={}&b=&kl=us-en", urlencoding::encode(&body.query));
 
-    let mut headers = Headers::new();
+    let headers = Headers::new();
     headers.set("User-Agent", UA)?;
     headers.set(
         "Accept",

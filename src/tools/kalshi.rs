@@ -1,10 +1,15 @@
 use crate::util::{dollars_to_cents, error_response, get_json, score, to_number, tokens, BOT_UA};
 use futures::future::join_all;
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::sync::Mutex;
 use worker::*;
 
 const BASE: &str = "https://api.elections.kalshi.com/trade-api/v2";
+const SERIES_TTL_MS: f64 = 10.0 * 60.0 * 1000.0;
+
+static SERIES_CACHE: Lazy<Mutex<Option<(f64, Vec<Value>)>>> = Lazy::new(|| Mutex::new(None));
 
 #[derive(Deserialize)]
 struct Req {
@@ -41,11 +46,24 @@ struct Resp {
 }
 
 async fn fetch_all_series() -> Result<Vec<Value>> {
+    let now = Date::now().as_millis() as f64;
+    if let Ok(guard) = SERIES_CACHE.lock() {
+        if let Some((ts, ref cached)) = *guard {
+            if now - ts < SERIES_TTL_MS {
+                return Ok(cached.clone());
+            }
+        }
+    }
     let v = get_json(&format!("{}/series", BASE), BOT_UA).await?;
-    Ok(v.get("series")
+    let list = v
+        .get("series")
         .and_then(|x| x.as_array())
         .cloned()
-        .unwrap_or_default())
+        .unwrap_or_default();
+    if let Ok(mut guard) = SERIES_CACHE.lock() {
+        *guard = Some((now, list.clone()));
+    }
+    Ok(list)
 }
 
 async fn fetch_events(series_ticker: &str) -> Vec<Value> {
@@ -102,7 +120,7 @@ pub async fn run(mut req: Request) -> Result<Response> {
         return Response::from_json(&Resp { results: vec![] });
     }
     let limit = body.limit.unwrap_or(8).clamp(1, 50);
-    let top_series = body.top_series.unwrap_or(15).clamp(1, 50);
+    let top_series = body.top_series.unwrap_or(10).clamp(1, 50);
 
     let series = match fetch_all_series().await {
         Ok(v) => v,

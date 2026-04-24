@@ -14,7 +14,7 @@ pub fn error_response(message: impl Into<String>) -> Result<Response> {
 }
 
 pub async fn get_text(url: &str, user_agent: &str, extra: &[(&str, &str)]) -> Result<String> {
-    let mut headers = Headers::new();
+    let headers = Headers::new();
     headers.set("User-Agent", user_agent)?;
     for (k, v) in extra {
         headers.set(k, v)?;
@@ -43,7 +43,7 @@ pub async fn get_json_status(
     url: &str,
     user_agent: &str,
 ) -> Result<(u16, Option<serde_json::Value>)> {
-    let mut headers = Headers::new();
+    let headers = Headers::new();
     headers.set("User-Agent", user_agent)?;
     headers.set("Accept", "application/json")?;
     let mut init = RequestInit::new();
