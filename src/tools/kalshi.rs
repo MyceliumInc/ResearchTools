@@ -1,4 +1,7 @@
-use crate::util::{dollars_to_cents, error_response, get_json, score, to_number, tokens, BOT_UA};
+use crate::util::{
+    cache_or, dollars_to_cents, get_json, score, to_number, tokens, BOT_UA,
+    TIMEOUT_DEFAULT_MS, TIMEOUT_SLOW_MS,
+};
 use futures::future::join_all;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
@@ -54,7 +57,7 @@ async fn fetch_all_series() -> Result<Vec<Value>> {
             }
         }
     }
-    let v = get_json(&format!("{}/series", BASE), BOT_UA).await?;
+    let v = get_json(&format!("{}/series", BASE), BOT_UA, TIMEOUT_SLOW_MS).await?;
     let list = v
         .get("series")
         .and_then(|x| x.as_array())
@@ -72,7 +75,7 @@ async fn fetch_events(series_ticker: &str) -> Vec<Value> {
         BASE,
         urlencoding::encode(series_ticker)
     );
-    match get_json(&url, BOT_UA).await {
+    match get_json(&url, BOT_UA, TIMEOUT_DEFAULT_MS).await {
         Ok(v) => v
             .get("events")
             .and_then(|x| x.as_array())
@@ -106,26 +109,27 @@ fn pick_market(markets: &[Value], needles: &[String]) -> Option<Value> {
     Some(markets[idx].clone())
 }
 
-pub async fn run(mut req: Request) -> Result<Response> {
-    let body: Req = match req.json().await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("bad request: {}", e)),
-    };
+pub async fn run(req: Request) -> Result<Response> {
+    cache_or(req, "kalshi_search", 60, execute).await
+}
+
+async fn execute(raw: Vec<u8>) -> Result<Vec<u8>> {
+    let body: Req = serde_json::from_slice(&raw)
+        .map_err(|e| Error::RustError(format!("bad request: {}", e)))?;
     let trimmed = body.query.trim().to_string();
     if trimmed.is_empty() {
-        return Response::from_json(&Resp { results: vec![] });
+        return Ok(serde_json::to_vec(&Resp { results: vec![] })?);
     }
     let needles = tokens(&trimmed);
     if needles.is_empty() {
-        return Response::from_json(&Resp { results: vec![] });
+        return Ok(serde_json::to_vec(&Resp { results: vec![] })?);
     }
     let limit = body.limit.unwrap_or(8).clamp(1, 50);
     let top_series = body.top_series.unwrap_or(10).clamp(1, 50);
 
-    let series = match fetch_all_series().await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("Kalshi search failed: {}", e)),
-    };
+    let series = fetch_all_series()
+        .await
+        .map_err(|e| Error::RustError(format!("Kalshi search failed: {}", e)))?;
 
     struct Ranked {
         s: Value,
@@ -182,7 +186,7 @@ pub async fn run(mut req: Request) -> Result<Response> {
     ranked.truncate(top_series);
 
     if ranked.is_empty() {
-        return Response::from_json(&Resp { results: vec![] });
+        return Ok(serde_json::to_vec(&Resp { results: vec![] })?);
     }
 
     let futs: Vec<_> = ranked
@@ -323,5 +327,5 @@ pub async fn run(mut req: Request) -> Result<Response> {
             )
     });
     scored.truncate(limit);
-    Response::from_json(&Resp { results: scored })
+    Ok(serde_json::to_vec(&Resp { results: scored })?)
 }

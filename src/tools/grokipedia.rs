@@ -1,4 +1,4 @@
-use crate::util::{error_response, get_json, BOT_UA};
+use crate::util::{cache_or, get_json, BOT_UA, TIMEOUT_FAST_MS};
 use serde::{Deserialize, Serialize};
 use worker::*;
 
@@ -22,14 +22,16 @@ struct Resp {
     results: Vec<Item>,
 }
 
-pub async fn run(mut req: Request) -> Result<Response> {
-    let body: Req = match req.json().await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("bad request: {}", e)),
-    };
+pub async fn run(req: Request) -> Result<Response> {
+    cache_or(req, "grokipedia_search", 300, execute).await
+}
+
+async fn execute(raw: Vec<u8>) -> Result<Vec<u8>> {
+    let body: Req = serde_json::from_slice(&raw)
+        .map_err(|e| Error::RustError(format!("bad request: {}", e)))?;
     let trimmed = body.query.trim();
     if trimmed.is_empty() {
-        return Response::from_json(&Resp { results: vec![] });
+        return Ok(serde_json::to_vec(&Resp { results: vec![] })?);
     }
     let limit = body.limit.unwrap_or(5).clamp(1, 25);
     let url = format!(
@@ -37,10 +39,9 @@ pub async fn run(mut req: Request) -> Result<Response> {
         urlencoding::encode(trimmed),
         limit
     );
-    let json = match get_json(&url, BOT_UA).await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("Grokipedia search failed: {}", e)),
-    };
+    let json = get_json(&url, BOT_UA, TIMEOUT_FAST_MS)
+        .await
+        .map_err(|e| Error::RustError(format!("Grokipedia search failed: {}", e)))?;
 
     let mut out = Vec::new();
     if let Some(arr) = json.get("results").and_then(|v| v.as_array()) {
@@ -67,5 +68,5 @@ pub async fn run(mut req: Request) -> Result<Response> {
             }
         }
     }
-    Response::from_json(&Resp { results: out })
+    Ok(serde_json::to_vec(&Resp { results: out })?)
 }

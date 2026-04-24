@@ -6,6 +6,9 @@ compatibility_date = "2026-04-01"
 pattern = "tools.mycelium.markets"
 custom_domain = true
 
+[placement]
+mode = "smart"
+
 [observability]
 enabled = true
 head_sampling_rate = 1

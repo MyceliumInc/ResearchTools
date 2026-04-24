@@ -1,4 +1,4 @@
-use crate::util::{error_response, get_json_status, BOT_UA};
+use crate::util::{cache_or, get_json_status, BOT_UA, TIMEOUT_FAST_MS};
 use serde::{Deserialize, Serialize};
 use worker::*;
 
@@ -12,22 +12,22 @@ struct Resp {
     summary: String,
 }
 
-pub async fn run(mut req: Request) -> Result<Response> {
-    let body: Req = match req.json().await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("bad request: {}", e)),
-    };
+pub async fn run(req: Request) -> Result<Response> {
+    cache_or(req, "wikipedia_summary", 600, execute).await
+}
+
+async fn execute(raw: Vec<u8>) -> Result<Vec<u8>> {
+    let body: Req = serde_json::from_slice(&raw)
+        .map_err(|e| Error::RustError(format!("bad request: {}", e)))?;
     let slug = body.title.replace(' ', "_");
     let url = format!(
         "https://en.wikipedia.org/api/rest_v1/page/summary/{}",
         urlencoding::encode(&slug)
     );
-    match get_json_status(&url, BOT_UA).await {
-        Ok((404, _)) => Response::from_json(&Resp {
-            summary: String::new(),
-        }),
+    let resp = match get_json_status(&url, BOT_UA, TIMEOUT_FAST_MS).await {
+        Ok((404, _)) | Ok((_, None)) => Resp { summary: String::new() },
         Ok((status, _)) if status >= 400 => {
-            error_response(format!("Wikipedia fetch failed: HTTP {}", status))
+            return Err(Error::RustError(format!("Wikipedia fetch failed: HTTP {}", status)));
         }
         Ok((_, Some(v))) => {
             let description = v.get("description").and_then(|d| d.as_str()).unwrap_or("");
@@ -39,13 +39,9 @@ pub async fn run(mut req: Request) -> Result<Response> {
             if !extract.is_empty() {
                 parts.push(extract.to_string());
             }
-            Response::from_json(&Resp {
-                summary: parts.join("\n\n"),
-            })
+            Resp { summary: parts.join("\n\n") }
         }
-        Ok((_, None)) => Response::from_json(&Resp {
-            summary: String::new(),
-        }),
-        Err(e) => error_response(format!("Wikipedia fetch failed: {}", e)),
-    }
+        Err(e) => return Err(Error::RustError(format!("Wikipedia fetch failed: {}", e))),
+    };
+    Ok(serde_json::to_vec(&resp)?)
 }

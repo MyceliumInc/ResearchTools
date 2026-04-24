@@ -1,4 +1,4 @@
-use crate::util::{error_response, get_text, BOT_UA};
+use crate::util::{error_response, get_text, BOT_UA, TIMEOUT_DEFAULT_MS};
 use quick_xml::events::Event;
 use quick_xml::reader::Reader;
 use serde::{Deserialize, Serialize};
@@ -88,21 +88,31 @@ fn parse_rss(xml: &str) -> Vec<NewsItem> {
     items
 }
 
+async fn try_source(url: &str) -> Result<Vec<NewsItem>> {
+    let xml = get_text(url, BOT_UA, &[], TIMEOUT_DEFAULT_MS).await?;
+    Ok(parse_rss(&xml))
+}
+
 pub async fn run(mut req: Request) -> Result<Response> {
     let body: Req = match req.json().await {
         Ok(v) => v,
         Err(e) => return error_response(format!("bad request: {}", e)),
     };
     let limit = body.limit.unwrap_or(10).clamp(1, 50);
-    let url = format!(
-        "https://news.google.com/rss/search?q={}&hl=en-US&gl=US&ceid=US:en",
-        urlencoding::encode(&body.query)
-    );
-    let xml = match get_text(&url, BOT_UA, &[]).await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("News search failed: {}", e)),
+    let q = urlencoding::encode(&body.query);
+
+    let google = format!("https://news.google.com/rss/search?q={}&hl=en-US&gl=US&ceid=US:en", q);
+    let bing = format!("https://www.bing.com/news/search?q={}&format=rss", q);
+
+    let items = match try_source(&google).await {
+        Ok(items) if !items.is_empty() => items,
+        _ => match try_source(&bing).await {
+            Ok(v) => v,
+            Err(e) => return error_response(format!("News search failed: {}", e)),
+        },
     };
-    let mut items = parse_rss(&xml);
+
+    let mut items = items;
     items.truncate(limit);
     Response::from_json(&Resp { items })
 }

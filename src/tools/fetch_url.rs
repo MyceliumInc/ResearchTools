@@ -1,4 +1,4 @@
-use crate::util::{error_response, strip_html_doc, BOT_UA};
+use crate::util::{error_response, send_request_timed, strip_html_doc, BOT_UA, TIMEOUT_SLOW_MS};
 use serde::{Deserialize, Serialize};
 use worker::*;
 
@@ -37,7 +37,7 @@ async fn fetch_text(url: &str, user_agent: &str, accept: Option<&str>) -> Result
     let mut init = RequestInit::new();
     init.with_method(Method::Get).with_headers(headers);
     let request = Request::new_with_init(url, &init)?;
-    let mut resp = Fetch::Request(request).send().await?;
+    let mut resp = send_request_timed(request, TIMEOUT_SLOW_MS).await?;
     let status = resp.status_code();
     let text = resp.text().await.unwrap_or_default();
     Ok((status, text))
