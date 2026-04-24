@@ -1,7 +1,15 @@
 pub mod fetch_url;
+pub mod gdelt;
 pub mod grokipedia;
 pub mod kalshi;
+pub mod manifold;
+pub mod metaculus;
 pub mod polymarket;
+pub mod reddit;
 pub mod search_news;
 pub mod search_web;
+pub mod sec;
+pub mod usgs_earthquakes;
+pub mod weather;
+pub mod wikidata;
 pub mod wikipedia;

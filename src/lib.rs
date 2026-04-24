@@ -33,6 +33,30 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         .post_async("/v1/polymarket_search", |req, _| async move {
             tools::polymarket::run(req).await
         })
+        .post_async("/v1/manifold_search", |req, _| async move {
+            tools::manifold::run(req).await
+        })
+        .post_async("/v1/metaculus_search", |req, _| async move {
+            tools::metaculus::run(req).await
+        })
+        .post_async("/v1/usgs_earthquakes", |req, _| async move {
+            tools::usgs_earthquakes::run(req).await
+        })
+        .post_async("/v1/gdelt_search", |req, _| async move {
+            tools::gdelt::run(req).await
+        })
+        .post_async("/v1/reddit_search", |req, _| async move {
+            tools::reddit::run(req).await
+        })
+        .post_async("/v1/wikidata_sparql", |req, _| async move {
+            tools::wikidata::run(req).await
+        })
+        .post_async("/v1/sec_filings", |req, _| async move {
+            tools::sec::run(req).await
+        })
+        .post_async("/v1/weather_forecast", |req, _| async move {
+            tools::weather::run(req).await
+        })
         .run(req, env)
         .await;
 

@@ -1,6 +1,6 @@
 ---
 name: mycelium-research-tools
-description: Shared HTTP research tools (web search, news, URL fetch, Wikipedia, Grokipedia, Kalshi, Polymarket) hosted at tools.mycelium.markets. Use for live fact-finding, base rates, entity lookups, and cross-checking prediction-market sentiment for forecasting or market-pricing tasks.
+description: Shared HTTP research tools (web search, news, URL fetch, Wikipedia, Wikidata, Grokipedia, Kalshi, Polymarket, Manifold, Metaculus, Reddit, SEC EDGAR, NWS weather, USGS earthquakes, GDELT) hosted at tools.mycelium.markets. Use for live fact-finding, base rates, entity lookups, and cross-checking prediction-market sentiment for forecasting or market-pricing tasks.
 ---
 
 # Mycelium Research Tools
@@ -30,11 +30,19 @@ This file is a self-contained skill: drop it into any agent's context (Claude Co
 | `grokipedia_search` | `POST /v1/grokipedia_search` | `{query, limit?=5}` | `{results: [{slug, title, snippet, url}]}` | 10s | Alternative encyclopedia search. Pair with `fetch_url` for full article. |
 | `kalshi_search` | `POST /v1/kalshi_search` | `{query, limit?=8, top_series?}` | `{results: [{ticker, event_ticker, series_ticker, title, subtitle, yes_bid_cents, yes_ask_cents, no_bid_cents, no_ask_cents, last_price_cents, volume_24h, open_interest, close_time, category, url, score}]}` | 25s | Cross-check external regulated-market sentiment. Prices in cents (0–100) = YES probability. |
 | `polymarket_search` | `POST /v1/polymarket_search` | `{query, limit?=8}` | `{results: [{slug, question, end_date, volume, liquidity, outcomes: [{outcome, price}], url}]}` | 15s | Cross-check external prediction-market sentiment. `price` is 0–1. |
+| `manifold_search` | `POST /v1/manifold_search` | `{query, limit?=8}` | `{results: [{id, question, url, probability_pct, outcome_type, is_resolved, resolution, close_time, volume, unique_bettors}]}` | 12s | Cross-check external prediction-market sentiment on long-tail/user-created markets. `probability_pct` is 0–100 for binary markets, null otherwise. |
+| `metaculus_search` | `POST /v1/metaculus_search` | `{query, limit?=8}` | `{results: [{id, title, url, status, probability_pct, question_type, published_at, close_time, resolution}]}` | 12s | Community-forecaster sentiment with calibration track records. `probability_pct` is 0–100 for binary questions. |
+| `reddit_search` | `POST /v1/reddit_search` | `{query, limit?=10, sort?="relevance", time?="week", subreddit?}` | `{results: [{title, subreddit, permalink, url, score, num_comments, created, author, snippet}]}` | 10s | Social sentiment / leading signals. NSFW filtered. |
+| `wikidata_sparql` | `POST /v1/wikidata_sparql` | `{query}` (raw SPARQL) | `{head: {vars}, rows: [{var: value}]}` | 25s | Structured entity facts (DOBs, office holders, company relationships). Input is a SPARQL query string. |
+| `sec_filings` | `POST /v1/sec_filings` | `{query, limit?=10, forms?}` | `{results: [{accession, form, filed_date, company, ciks, tickers, url}]}` | 12s | EDGAR full-text search for corporate filings (10-K, 10-Q, 8-K, etc). Best for earnings/corporate prediction markets. |
+| `weather_forecast` | `POST /v1/weather_forecast` | `{lat, lon}` | `{location: {city, state, lat, lon}, periods: [{name, start_time, end_time, temperature, temperature_unit, wind_speed, wind_direction, short_forecast, detailed_forecast, precip_probability_pct}]}` | 15s | 7-day NWS forecast (US only). Use for weather-contingent markets (hurricanes, temperature records). |
+| `usgs_earthquakes` | `POST /v1/usgs_earthquakes` | `{min_magnitude?=4.5, limit?=20, hours?=24}` | `{results: [{id, magnitude, place, time, url, title, tsunami, felt, longitude, latitude, depth_km}]}` | 8s | Recent seismic events. `hours` buckets to USGS summary feeds (hour/day/week/month). |
+| `gdelt_search` | `POST /v1/gdelt_search` | `{query, limit?=10, timespan?="24h"}` | `{results: [{title, url, domain, seen_date, language, source_country}]}` | 12s | Real-time global news/events aggregation across thousands of sources. Good for geopolitical base rates. |
 | health check | `GET /` | — | `ok` | — | Liveness probe. |
 
 ### Sensitive-source rule
 
-`kalshi_search` and `polymarket_search` return real external-market odds. When an agent surfaces these results in user-facing output, **never name Kalshi or Polymarket**. Describe the data as "external sentiment," "market projections," or "consensus probabilities." The raw JSON is exposed so agents can decide on presentation; this is a policy on final output, not on tool use.
+`kalshi_search`, `polymarket_search`, `manifold_search`, and `metaculus_search` return real external-market or community-forecaster odds. When an agent surfaces these results in user-facing output, **never name Kalshi, Polymarket, Manifold, or Metaculus**. Describe the data as "external sentiment," "market projections," "community forecasts," or "consensus probabilities." The raw JSON is exposed so agents can decide on presentation; this is a policy on final output, not on tool use.
 
 ## Minimal client (any language)
 
@@ -101,7 +109,7 @@ export const searchWebTool = tool(
 );
 ```
 
-Full reference wrappers (all seven tools, including Kalshi/Polymarket camel-case remapping and LLM-friendly formatters) live in `Site/lib/agents/tools/` in the Mycelium repo.
+Full reference wrappers (all fifteen tools, including camel-case remapping and LLM-friendly formatters) live in `Site/lib/agents/tools/` in the Mycelium repo.
 
 ### Anthropic tool use (direct API)
 
@@ -132,6 +140,14 @@ Either wrap these endpoints in a local MCP server (one tool per route), or paste
 - **grokipedia_search** — "Search Grokipedia (xAI's encyclopedia) for the most relevant articles on a topic. Returns top matches with title, lead snippet, and article URL. Pair with fetch_url on the result URL when you need the full article."
 - **kalshi_search** — "Fuzzy search external regulated prediction-market sentiment. Prices are in cents (0–100) representing YES probability. Returns YES/NO bid/ask, last trade, 24h volume, close time, reference URL. IMPORTANT: never reference Kalshi by name in user-facing output — describe results only as external sentiment or consensus probabilities."
 - **polymarket_search** — "Fuzzy search external prediction-market sentiment. Returns YES/NO probabilities, 24h volume, liquidity, resolution date, reference URL. IMPORTANT: never reference Polymarket by name in user-facing output — describe results only as external sentiment or consensus probabilities."
+- **manifold_search** — "Fuzzy search long-tail prediction-market sentiment. Returns YES probability (0–100) for binary markets, volume, unique bettors, close time, reference URL. IMPORTANT: never reference Manifold by name — describe results only as external sentiment."
+- **metaculus_search** — "Community-forecaster probabilities with strong calibration track records. Returns probability, status, resolution if closed, reference URL. IMPORTANT: never reference Metaculus by name — describe results only as community forecasts or consensus estimates."
+- **reddit_search** — "Search Reddit for social sentiment and leading signals on a topic. Returns top posts with title, subreddit, score, comments, created date, and snippet. Optional subreddit restriction."
+- **wikidata_sparql** — "Query Wikidata's structured knowledge graph with SPARQL. Use for precise entity facts (DOBs, office holders, company relationships) where prose sources are unreliable."
+- **sec_filings** — "Search SEC EDGAR full-text for corporate filings (10-K, 10-Q, 8-K, etc). Returns accession, form, filed date, company, CIK/ticker, and filing URL. Best for earnings/corporate prediction markets."
+- **weather_forecast** — "Fetch the NWS 7-day forecast for a US lat/lon. Returns city/state, per-period temperature, wind, precipitation probability, and detailed forecast. Use for weather-contingent markets."
+- **usgs_earthquakes** — "Recent significant earthquakes from USGS. Returns magnitude, location, time, tsunami flag, lat/lon/depth, and detail URL. Controllable by time window and minimum magnitude."
+- **gdelt_search** — "Search the GDELT global events database for recent news across thousands of sources worldwide. Returns title, URL, domain, date, language, source country. Use for geopolitical base rates or cross-language news coverage."
 
 ## Suggested research flow
 
