@@ -2,9 +2,6 @@ name = "mycelium-tools"
 main = "build/worker/shim.mjs"
 compatibility_date = "2026-04-01"
 
-[build]
-command = "PATH=\"/opt/homebrew/opt/rustup/bin:$HOME/.cargo/bin:$PATH\" worker-build --release"
-
 [[routes]]
 pattern = "tools.mycelium.markets"
 custom_domain = true
@@ -15,8 +12,3 @@ head_sampling_rate = 1
 
 [observability.logs]
 invocation_logs = true
-
-[observability.traces]
-enabled = true
-persist = true
-head_sampling_rate = 1
