@@ -19,16 +19,16 @@ fn body_hash(body: &[u8]) -> u64 {
     h.finish()
 }
 
-pub fn cache_key(tool: &str, body: &[u8]) -> String {
+fn cache_key(tool: &str, body: &[u8]) -> String {
     format!("https://tools-cache.internal/{}?h={:016x}", tool, body_hash(body))
 }
 
-pub async fn cache_lookup(tool: &str, body: &[u8]) -> Option<Response> {
+async fn cache_lookup(tool: &str, body: &[u8]) -> Option<Response> {
     let key = cache_key(tool, body);
     Cache::default().get(&key, true).await.ok().flatten()
 }
 
-pub async fn cache_store(tool: &str, body: &[u8], ttl_s: u32, payload: &[u8]) -> Result<Response> {
+async fn cache_store(tool: &str, body: &[u8], ttl_s: u32, payload: &[u8]) -> Result<Response> {
     let key = cache_key(tool, body);
     let headers = Headers::new();
     headers.set("Content-Type", "application/json")?;
