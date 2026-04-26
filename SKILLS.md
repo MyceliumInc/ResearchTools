@@ -1,6 +1,6 @@
 ---
 name: mycelium-research-tools
-description: Shared HTTP research tools (web search, news, URL fetch, Wikipedia, Wikidata, Grokipedia, Kalshi, Polymarket, Manifold, Reddit, SEC EDGAR, NWS weather, USGS earthquakes) hosted at tools.mycelium.markets. Use for live fact-finding, base rates, entity lookups, and cross-checking prediction-market sentiment for forecasting or market-pricing tasks.
+description: Shared HTTP research tools (web search, news, URL fetch, Wikipedia, Wikidata, Grokipedia, Polymarket, Manifold, SEC EDGAR, NWS weather, USGS earthquakes) hosted at tools.mycelium.markets. Use for live fact-finding, base rates, entity lookups, and cross-checking prediction-market sentiment for forecasting or market-pricing tasks.
 ---
 
 # Mycelium Research Tools
@@ -28,10 +28,8 @@ This file is a self-contained skill: drop it into any agent's context (Claude Co
 | `fetch_url` | `POST /v1/fetch_url` | `{url, max_chars?=3500}` | `{text, source: "jina"\|"raw"}` | 15s | Read a specific page as clean Markdown. Use after a search tool. |
 | `wikipedia_summary` | `POST /v1/wikipedia_summary` | `{title}` | `{summary}` | 10s | Background facts, base rates, entity confirmation by canonical title. |
 | `grokipedia_search` | `POST /v1/grokipedia_search` | `{query, limit?=5}` | `{results: [{slug, title, snippet, url}]}` | 10s | Alternative encyclopedia search. Pair with `fetch_url` for full article. |
-| `kalshi_search` | `POST /v1/kalshi_search` | `{query, limit?=8, top_series?}` | `{results: [{ticker, event_ticker, series_ticker, title, subtitle, yes_bid_cents, yes_ask_cents, no_bid_cents, no_ask_cents, last_price_cents, volume_24h, open_interest, close_time, category, url, score}]}` | 25s | Cross-check external regulated-market sentiment. Prices in cents (0–100) = YES probability. |
 | `polymarket_search` | `POST /v1/polymarket_search` | `{query, limit?=8}` | `{results: [{slug, question, end_date, volume, liquidity, outcomes: [{outcome, price}], url}]}` | 15s | Cross-check external prediction-market sentiment. `price` is 0–1. |
 | `manifold_search` | `POST /v1/manifold_search` | `{query, limit?=8}` | `{results: [{id, question, url, probability_pct, outcome_type, is_resolved, resolution, close_time, volume, unique_bettors}]}` | 12s | Cross-check external prediction-market sentiment on long-tail/user-created markets. `probability_pct` is 0–100 for binary markets, null otherwise. |
-| `reddit_search` | `POST /v1/reddit_search` | `{query, limit?=10, sort?="relevance", time?="week", subreddit?}` | `{results: [{title, subreddit, permalink, url, score, num_comments, created, author, snippet}]}` | 10s | Social sentiment / leading signals. NSFW filtered. |
 | `wikidata_sparql` | `POST /v1/wikidata_sparql` | `{query}` (raw SPARQL) | `{head: {vars}, rows: [{var: value}]}` | 25s | Structured entity facts (DOBs, office holders, company relationships). Input is a SPARQL query string. |
 | `sec_filings` | `POST /v1/sec_filings` | `{query, limit?=10, forms?}` | `{results: [{accession, form, filed_date, company, ciks, tickers, url}]}` | 12s | EDGAR full-text search for corporate filings (10-K, 10-Q, 8-K, etc). Best for earnings/corporate prediction markets. |
 | `weather_forecast` | `POST /v1/weather_forecast` | `{lat, lon}` | `{location: {city, state, lat, lon}, periods: [{name, start_time, end_time, temperature, temperature_unit, wind_speed, wind_direction, short_forecast, detailed_forecast, precip_probability_pct}]}` | 15s | 7-day NWS forecast (US only). Use for weather-contingent markets (hurricanes, temperature records). |
@@ -40,7 +38,7 @@ This file is a self-contained skill: drop it into any agent's context (Claude Co
 
 ### Sensitive-source rule
 
-`kalshi_search`, `polymarket_search`, and `manifold_search` return real external-market odds. When an agent surfaces these results in user-facing output, **never name Kalshi, Polymarket, or Manifold**. Describe the data as "external sentiment," "market projections," or "consensus probabilities." The raw JSON is exposed so agents can decide on presentation; this is a policy on final output, not on tool use.
+`polymarket_search` and `manifold_search` return real external-market odds. When an agent surfaces these results in user-facing output, **never name Polymarket or Manifold**. Describe the data as "external sentiment," "market projections," or "consensus probabilities." The raw JSON is exposed so agents can decide on presentation; this is a policy on final output, not on tool use.
 
 ## Minimal client (any language)
 
@@ -107,7 +105,7 @@ export const searchWebTool = tool(
 );
 ```
 
-Full reference wrappers (all thirteen tools, including camel-case remapping and LLM-friendly formatters) live in `Site/lib/agents/tools/` in the Mycelium repo.
+Full reference wrappers (all current tools, including camel-case remapping and LLM-friendly formatters) live in `Site/lib/agents/tools/` in the Mycelium repo.
 
 ### Anthropic tool use (direct API)
 
@@ -136,10 +134,8 @@ Either wrap these endpoints in a local MCP server (one tool per route), or paste
 - **fetch_url** — "Fetch and read a web page as clean Markdown (Jina Reader). Use after search_web / search_news to read full articles."
 - **wikipedia_summary** — "Fetch the Wikipedia lead paragraph for a given article title. Use for background facts, base rates, or entity confirmation."
 - **grokipedia_search** — "Search Grokipedia (xAI's encyclopedia) for the most relevant articles on a topic. Returns top matches with title, lead snippet, and article URL. Pair with fetch_url on the result URL when you need the full article."
-- **kalshi_search** — "Fuzzy search external regulated prediction-market sentiment. Prices are in cents (0–100) representing YES probability. Returns YES/NO bid/ask, last trade, 24h volume, close time, reference URL. IMPORTANT: never reference Kalshi by name in user-facing output — describe results only as external sentiment or consensus probabilities."
 - **polymarket_search** — "Fuzzy search external prediction-market sentiment. Returns YES/NO probabilities, 24h volume, liquidity, resolution date, reference URL. IMPORTANT: never reference Polymarket by name in user-facing output — describe results only as external sentiment or consensus probabilities."
 - **manifold_search** — "Fuzzy search long-tail prediction-market sentiment. Returns YES probability (0–100) for binary markets, volume, unique bettors, close time, reference URL. IMPORTANT: never reference Manifold by name — describe results only as external sentiment."
-- **reddit_search** — "Search Reddit for social sentiment and leading signals on a topic. Returns top posts with title, subreddit, score, comments, created date, and snippet. Optional subreddit restriction."
 - **wikidata_sparql** — "Query Wikidata's structured knowledge graph with SPARQL. Use for precise entity facts (DOBs, office holders, company relationships) where prose sources are unreliable."
 - **sec_filings** — "Search SEC EDGAR full-text for corporate filings (10-K, 10-Q, 8-K, etc). Returns accession, form, filed date, company, CIK/ticker, and filing URL. Best for earnings/corporate prediction markets."
 - **weather_forecast** — "Fetch the NWS 7-day forecast for a US lat/lon. Returns city/state, per-period temperature, wind, precipitation probability, and detailed forecast. Use for weather-contingent markets."
@@ -150,13 +146,12 @@ Either wrap these endpoints in a local MCP server (one tool per route), or paste
 1. **Scope the question.** Is it time-sensitive (→ `search_news`) or background (→ `wikipedia_summary` / `grokipedia_search` / `search_web`)?
 2. **Gather links.** Run one or two search tools.
 3. **Read.** `fetch_url` the two or three most relevant URLs.
-4. **Cross-check odds.** For forecasting/pricing tasks, call `kalshi_search` and `polymarket_search` to anchor against external consensus.
-5. **Synthesize.** Cite sources by URL; suppress the Kalshi/Polymarket brand names per the rule above.
+4. **Cross-check odds.** For forecasting/pricing tasks, call `polymarket_search` and `manifold_search` to anchor against external consensus.
+5. **Synthesize.** Cite sources by URL; suppress the Polymarket/Manifold brand names per the rule above.
 
 ## Operational notes
 
 - No response caching in v1 — each call hits upstream fresh. Budget latency accordingly; parallelize independent calls.
-- Kalshi fan-out can hit up to 15 event lookups per query; keep its timeout ≥20s.
 - `fetch_url` returns `source: "jina"` normally and falls back to `"raw"` when Jina Reader fails; both are safe to feed to an LLM.
-- All numeric `*_cents` fields are integers 0–100. Polymarket `outcomes[].price` is a float 0–1.
+- Polymarket `outcomes[].price` is a float 0–1; Manifold `probability_pct` is 0–100.
 - The health check (`GET /`) is the fastest way to confirm the service is reachable from a new environment.

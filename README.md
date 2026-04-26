@@ -2,8 +2,9 @@
 
 Shared HTTP tools service for Mycelium agents. Rust Cloudflare Worker at
 `tools.mycelium.markets`. Exposes the research/sentiment tools (search, fetch,
-Wikipedia, Grokipedia, Google News, Kalshi, Polymarket) that used to live
-inside `Site/lib/agents/tools/`.
+Wikipedia, Wikidata, Grokipedia, Google News, Polymarket, Manifold, SEC
+EDGAR, NWS weather, USGS earthquakes) that used to live inside
+`Site/lib/agents/tools/`.
 
 Both the Site agents (Creator, Pricer) and external callers (MCP, partner
 bots) hit the same endpoints — one source of truth, fast edge deploys, no
@@ -17,8 +18,8 @@ duplicated implementations.
   MCP; tool calls never leave Cloudflare's network when invoked from another
   Worker.
 - **Fast.** Rust + WASM parses HTML/XML/JSON with a fraction of the CPU-ms a
-  JS isolate spends — matters under fan-out (Kalshi does up to 15 parallel
-  event lookups per query).
+  JS isolate spends — matters under fan-out where a single tool call can
+  multiplex many upstream lookups.
 
 ## Endpoints
 
@@ -34,7 +35,6 @@ Base URL: `https://tools.mycelium.markets`
 | `POST /v1/fetch_url` | `{url, max_chars?}` | `{text, source: "jina" \| "raw"}` |
 | `POST /v1/wikipedia_summary` | `{title}` | `{summary}` |
 | `POST /v1/grokipedia_search` | `{query, limit?}` | `{results: [{slug, title, snippet, url}]}` |
-| `POST /v1/kalshi_search` | `{query, limit?, top_series?}` | `{results: [...]}` |
 | `POST /v1/polymarket_search` | `{query, limit?}` | `{results: [...]}` |
 | `GET /` | — | `ok` |
 
@@ -42,7 +42,7 @@ Base URL: `https://tools.mycelium.markets`
 `{"error": "<message>"}` so callers can surface a soft error to the LLM
 without a retry loop. Bad requests return 4xx; worker bugs return 5xx.
 
-Limits default to today's TS defaults (8 for search_web / polymarket / kalshi,
+Limits default to today's TS defaults (8 for search_web / polymarket / manifold,
 10 for search_news, 5 for grokipedia, 3500 chars for fetch_url).
 
 ## Shape notes
@@ -51,9 +51,9 @@ Responses are **structured JSON**, not pre-formatted strings. Site-side
 wrappers (`Site/lib/agents/tools/*.ts`) handle the LangChain `formatX` step.
 External callers can render however they like.
 
-Kalshi / Polymarket responses intentionally expose the upstream ticker, URL,
+Polymarket / Manifold responses intentionally expose the upstream slug, URL,
 and prices so callers can decide how to present them. The "never reference
-Kalshi/Polymarket by name" rule is enforced in the Site wrappers' LangChain
+Polymarket/Manifold by name" rule is enforced in the Site wrappers' LangChain
 tool descriptions, not here.
 
 ## Layout
@@ -68,8 +68,12 @@ src/
     fetch_url.rs    # Jina Reader + raw HTML fallback
     wikipedia.rs    # Wikipedia REST summary
     grokipedia.rs   # Grokipedia typeahead
-    kalshi.rs       # Kalshi /series + /events fan-out
     polymarket.rs   # Gamma public-search
+    manifold.rs     # Manifold markets search
+    wikidata.rs     # Wikidata SPARQL
+    sec.rs          # SEC EDGAR full-text search
+    weather.rs      # NWS forecast
+    usgs_earthquakes.rs  # USGS recent quakes
 ```
 
 ## Commands
@@ -103,6 +107,4 @@ and depends on per-request auth context. Do not move it here.
 
 **No URL response caching** in v1. Each request fetches upstream fresh. If
 you need to add it later, use the Cloudflare Cache API, keyed by normalized
-upstream URL, with short TTLs (60s news, 5m fetch, 10m wiki). The Kalshi
-series list is a good candidate for KV-backed caching (10m TTL) but is not
-cached today.
+upstream URL, with short TTLs (60s news, 5m fetch, 10m wiki).

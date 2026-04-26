@@ -6,7 +6,7 @@ contract.
 
 ## Why Rust
 
-- Parsing-heavy (DDG HTML, Google News RSS, Kalshi event fan-out) — Rust uses
+- Parsing-heavy (DDG HTML, Google News RSS, Polymarket pagination) — Rust uses
   ~3–5× less CPU-ms per request than the old TS implementations.
 - Single source of truth for Site + MCP + external callers.
 - Deployed as WASM to Cloudflare Workers; same edge as Site and MCP.
@@ -21,9 +21,8 @@ contract.
 
 - **No auth.** Endpoint is public; we're on Workers paid tier and the tools
   scrape public sources. Don't add bearer tokens here without a reason.
-- **No URL response caching in v1.** Fetch upstream fresh each call. Kalshi's
-  series list was cached in-memory in the TS version; it is not cached here.
-  If latency becomes a problem, add KV for the Kalshi series first.
+- **No URL response caching in v1.** Fetch upstream fresh each call. If
+  latency becomes a problem, add KV in front of the slowest upstream first.
 - **Errors as HTTP 200 + `{error}`.** Match the TS tools' "Search failed:
   ..." UX so the LLM sees a soft error rather than a retry-able 5xx.
 - **Structured JSON out, not pre-formatted strings.** The Site wrappers own
@@ -32,8 +31,8 @@ contract.
   `AbortController` in `src/util.rs`.
 - **No `unsafe`, no `panic!` in handler paths.** Surface upstream failures
   via the error JSON.
-- **Parallel fan-out** uses `futures::future::join_all`. The only tool that
-  needs this today is Kalshi.
+- **Parallel fan-out** uses `futures::future::join_all` when a tool needs to
+  multiplex upstream calls.
 
 ## Dependencies
 
@@ -44,7 +43,7 @@ Kept minimal to shrink the WASM bundle:
 - `regex` — DDG HTML + HTML tag stripping (matches TS behavior exactly).
 - `quick-xml` — Google News RSS.
 - `urlencoding` — query-string escaping.
-- `futures` — `join_all` for Kalshi fan-out.
+- `futures` — `join_all` for parallel upstream fan-out.
 
 No `scraper` / `html5ever` — overkill for the small number of HTML endpoints
 we touch, and they inflate the WASM bundle by >1 MB.
