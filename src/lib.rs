@@ -27,9 +27,6 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         .post_async("/v1/grokipedia_search", |req, _| async move {
             tools::grokipedia::run(req).await
         })
-        .post_async("/v1/kalshi_search", |req, _| async move {
-            tools::kalshi::run(req).await
-        })
         .post_async("/v1/polymarket_search", |req, _| async move {
             tools::polymarket::run(req).await
         })
@@ -38,9 +35,6 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         })
         .post_async("/v1/usgs_earthquakes", |req, _| async move {
             tools::usgs_earthquakes::run(req).await
-        })
-        .post_async("/v1/reddit_search", |req, _| async move {
-            tools::reddit::run(req).await
         })
         .post_async("/v1/wikidata_sparql", |req, _| async move {
             tools::wikidata::run(req).await
