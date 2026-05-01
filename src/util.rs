@@ -5,8 +5,6 @@ use std::hash::{Hash, Hasher};
 use std::time::Duration;
 use worker::*;
 
-pub const UA: &str =
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 pub const BOT_UA: &str = "MyceliumBot/1.0";
 
 pub const TIMEOUT_FAST_MS: u64 = 6_000;

@@ -12,8 +12,8 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
 
     let result = Router::new()
         .get("/", |_, _| Response::ok("ok"))
-        .post_async("/v1/search_web", |req, _| async move {
-            tools::search_web::run(req).await
+        .post_async("/v1/search_web", |req, ctx| async move {
+            tools::search_web::run(req, ctx).await
         })
         .post_async("/v1/search_news", |req, _| async move {
             tools::search_news::run(req).await
