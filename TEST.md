@@ -39,7 +39,6 @@ check grokipedia_search /v1/grokipedia_search '{"query":"ethereum","limit":3}'  
 check polymarket_search /v1/polymarket_search '{"query":"election","limit":3}'                  '.results | type == "array"'
 check manifold_search   /v1/manifold_search   '{"query":"bitcoin","limit":3}'                   '.results | type == "array"'
 check usgs_earthquakes  /v1/usgs_earthquakes  '{"min_magnitude":2.5,"hours":168,"limit":5}'     '.results | type == "array"'
-check wikidata_sparql   /v1/wikidata_sparql   '{"query":"SELECT ?item ?itemLabel WHERE { ?item wdt:P31 wd:Q3624078 . SERVICE wikibase:label { bd:serviceParam wikibase:language \"en\" . } } LIMIT 3"}' '.rows | type == "array"'
 check sec_filings       /v1/sec_filings       '{"query":"Apple","limit":3,"forms":["10-K"]}'    '.results | type == "array"'
 check weather_forecast  /v1/weather_forecast  '{"lat":40.7128,"lon":-74.0060}'                  '.periods | type == "array" and length > 0'
 ```

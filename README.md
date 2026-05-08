@@ -31,7 +31,6 @@ Base URL: `https://tools.mycelium.markets`
 | `POST /v1/search_news` | `{query, limit?}` | `{items: [{title, link, pub_date}]}` |
 | `POST /v1/fetch_url` | `{url, max_chars?}` | `{text, source: "jina" \| "raw"}` |
 | `POST /v1/wikipedia_summary` | `{title}` | `{summary}` |
-| `POST /v1/wikidata_sparql` | `{query}` | `{results: [...]}` |
 | `POST /v1/grokipedia_search` | `{query, limit?}` | `{results: [{slug, title, snippet, url}]}` |
 | `POST /v1/polymarket_search` | `{query, limit?}` | `{results: [...]}` |
 | `POST /v1/manifold_search` | `{query, limit?}` | `{results: [...]}` |
@@ -46,7 +45,6 @@ without a retry loop. Bad requests return 4xx; worker bugs return 5xx.
 
 Default limits: 8 (search_web, polymarket, manifold), 10 (search_news,
 sec_filings), 5 (grokipedia), 20 (usgs_earthquakes), 3500 chars (fetch_url).
-Wikidata SPARQL queries are capped at 8000 chars.
 
 ## Shape notes
 
@@ -71,7 +69,6 @@ src/
     search_news.rs      # Google News RSS
     fetch_url.rs        # Jina Reader + raw HTML fallback
     wikipedia.rs        # Wikipedia REST summary
-    wikidata.rs         # Wikidata SPARQL
     grokipedia.rs       # Grokipedia typeahead
     polymarket.rs       # Gamma public-search
     manifold.rs         # Manifold markets search

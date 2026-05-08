@@ -7,5 +7,4 @@ pub mod search_web;
 pub mod sec;
 pub mod usgs_earthquakes;
 pub mod weather;
-pub mod wikidata;
 pub mod wikipedia;

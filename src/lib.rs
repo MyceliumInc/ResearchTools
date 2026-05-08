@@ -36,9 +36,6 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         .post_async("/v1/usgs_earthquakes", |req, _| async move {
             tools::usgs_earthquakes::run(req).await
         })
-        .post_async("/v1/wikidata_sparql", |req, _| async move {
-            tools::wikidata::run(req).await
-        })
         .post_async("/v1/sec_filings", |req, _| async move {
             tools::sec::run(req).await
         })
