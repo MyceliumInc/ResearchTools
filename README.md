@@ -12,14 +12,11 @@ duplicated implementations.
 
 ## Why this exists
 
-- **One impl, many callers.** Site's Pricer, MCP agents, and anyone else can
-  use the same tools by URL.
-- **Edge-local.** Deployed on Cloudflare Workers in the same POPs as Site and
+- **One impl, many callers.** Site's Pricer, MCP agents, and anyone else use
+  the same tools by URL.
+- **Edge-local + fast.** Rust + WASM on the same Cloudflare POPs as Site and
   MCP; tool calls never leave Cloudflare's network when invoked from another
   Worker.
-- **Fast.** Rust + WASM parses HTML/XML/JSON with a fraction of the CPU-ms a
-  JS isolate spends — matters under fan-out where a single tool call can
-  multiplex many upstream lookups.
 
 ## Endpoints
 
@@ -34,16 +31,22 @@ Base URL: `https://tools.mycelium.markets`
 | `POST /v1/search_news` | `{query, limit?}` | `{items: [{title, link, pub_date}]}` |
 | `POST /v1/fetch_url` | `{url, max_chars?}` | `{text, source: "jina" \| "raw"}` |
 | `POST /v1/wikipedia_summary` | `{title}` | `{summary}` |
+| `POST /v1/wikidata_sparql` | `{query}` | `{results: [...]}` |
 | `POST /v1/grokipedia_search` | `{query, limit?}` | `{results: [{slug, title, snippet, url}]}` |
 | `POST /v1/polymarket_search` | `{query, limit?}` | `{results: [...]}` |
+| `POST /v1/manifold_search` | `{query, limit?}` | `{results: [...]}` |
+| `POST /v1/sec_filings` | `{query, limit?}` | `{results: [...]}` |
+| `POST /v1/weather_forecast` | `{lat, lon}` | `{periods: [...]}` |
+| `POST /v1/usgs_earthquakes` | `{min_magnitude?, limit?}` | `{quakes: [...]}` |
 | `GET /` | — | `ok` |
 
 **Error contract.** Upstream failures return HTTP 200 with
 `{"error": "<message>"}` so callers can surface a soft error to the LLM
 without a retry loop. Bad requests return 4xx; worker bugs return 5xx.
 
-Limits default to today's TS defaults (8 for search_web / polymarket / manifold,
-10 for search_news, 5 for grokipedia, 3500 chars for fetch_url).
+Default limits: 8 (search_web, polymarket, manifold), 10 (search_news,
+sec_filings), 5 (grokipedia), 20 (usgs_earthquakes), 3500 chars (fetch_url).
+Wikidata SPARQL queries are capped at 8000 chars.
 
 ## Shape notes
 
@@ -61,19 +64,20 @@ tool descriptions, not here.
 ```
 src/
   lib.rs            # worker entry + router
+  util.rs           # fetch w/ timeout + shared helpers
   tools/
     mod.rs
-    search_web.rs   # DuckDuckGo Lite SERP scrape
-    search_news.rs  # Google News RSS
-    fetch_url.rs    # Jina Reader + raw HTML fallback
-    wikipedia.rs    # Wikipedia REST summary
-    grokipedia.rs   # Grokipedia typeahead
-    polymarket.rs   # Gamma public-search
-    manifold.rs     # Manifold markets search
-    wikidata.rs     # Wikidata SPARQL
-    sec.rs          # SEC EDGAR full-text search
-    weather.rs      # NWS forecast
-    usgs_earthquakes.rs  # USGS recent quakes
+    search_web.rs       # DuckDuckGo Lite SERP scrape
+    search_news.rs      # Google News RSS
+    fetch_url.rs        # Jina Reader + raw HTML fallback
+    wikipedia.rs        # Wikipedia REST summary
+    wikidata.rs         # Wikidata SPARQL
+    grokipedia.rs       # Grokipedia typeahead
+    polymarket.rs       # Gamma public-search
+    manifold.rs         # Manifold markets search
+    sec.rs              # SEC EDGAR full-text search
+    weather.rs          # NWS forecast
+    usgs_earthquakes.rs # USGS recent quakes
 ```
 
 ## Commands
@@ -102,9 +106,3 @@ pure-Rust WASM worker.
 
 `search_markets` stays on Site — it hits Supabase via the service-role client
 and depends on per-request auth context. Do not move it here.
-
-## Caching
-
-**No URL response caching** in v1. Each request fetches upstream fresh. If
-you need to add it later, use the Cloudflare Cache API, keyed by normalized
-upstream URL, with short TTLs (60s news, 5m fetch, 10m wiki).
