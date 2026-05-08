@@ -22,5 +22,14 @@ HTTP contract, route table, and commands.
 
 ## Uptime
 
-The Site Worker probes every endpoint here every 15 minutes and logs to
-`helpers.uptime`; results surface at `/admin/health`. See root `CLAUDE.md`.
+Each `/v1/*` handler self-reports `(tool, ms, status, error)` to
+`helpers.uptime` via `ctx.wait_until` after responding — the central wrapper
+in `src/lib.rs` reads the response body, sniffs for soft `{error}` payloads,
+and posts to `public.uptime_record` (anon-callable `SECURITY DEFINER` RPC)
+without adding latency to the caller. Records reflect real agent traffic;
+tools that aren't called show as "no traffic in <window>" at `/admin/health`.
+
+`SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are bound as `[vars]` in
+`wrangler.toml`. The publishable key is the same one shipped in Site's
+browser bundle, so it's not a secret. Cache-hit responses are recorded too —
+their low ms reflects reality.

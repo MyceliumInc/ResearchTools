@@ -1,12 +1,15 @@
 use worker::*;
 
-mod util;
 mod tools;
+mod uptime;
+mod util;
 
 #[event(fetch)]
-async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
+async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
     let method = req.method().to_string();
     let path = req.path();
+    let tool = uptime::tool_from_path(&path);
+    let supabase = uptime::supabase_config(&env);
     let start = Date::now().as_millis();
     console_log!("→ {} {}", method, path);
 
@@ -45,16 +48,52 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         .run(req, env)
         .await;
 
-    let ms = Date::now().as_millis() - start;
-    match &result {
-        Ok(resp) => console_log!(
-            "← {} {} {} {}ms",
-            method,
-            path,
-            resp.status_code(),
-            ms
-        ),
-        Err(e) => console_log!("✗ {} {} {}ms err={}", method, path, ms, e),
+    let ms = (Date::now().as_millis() - start) as u32;
+
+    match result {
+        Ok(mut resp) => {
+            let status = resp.status_code();
+            if let (Some(tool), Some((url, key))) = (tool, supabase) {
+                let bytes = resp.bytes().await.unwrap_or_default();
+                let headers = resp.headers().clone();
+                let error = if status >= 400 {
+                    Some(format!("HTTP {}", status))
+                } else {
+                    uptime::detect_soft_error(&bytes)
+                };
+                console_log!("← {} {} {} {}ms", method, path, status, ms);
+                ctx.wait_until(uptime::record(
+                    url,
+                    key,
+                    uptime::Outcome {
+                        tool,
+                        ms,
+                        status,
+                        error,
+                    },
+                ));
+                Response::from_bytes(bytes).map(|r| r.with_status(status).with_headers(headers))
+            } else {
+                console_log!("← {} {} {} {}ms", method, path, status, ms);
+                Ok(resp)
+            }
+        }
+        Err(e) => {
+            console_log!("✗ {} {} {}ms err={}", method, path, ms, e);
+            if let (Some(tool), Some((url, key))) = (tool, supabase) {
+                let msg = uptime::truncate(&e.to_string(), 300);
+                ctx.wait_until(uptime::record(
+                    url,
+                    key,
+                    uptime::Outcome {
+                        tool,
+                        ms,
+                        status: 500,
+                        error: Some(msg),
+                    },
+                ));
+            }
+            Err(e)
+        }
     }
-    result
 }

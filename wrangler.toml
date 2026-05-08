@@ -6,6 +6,10 @@ compatibility_date = "2026-04-01"
 pattern = "tools.mycelium.markets"
 custom_domain = true
 
+[vars]
+SUPABASE_URL = "https://sdqyvphxhsxmiiidsndg.supabase.co"
+SUPABASE_PUBLISHABLE_KEY = "sb_publishable_lfySe5qzTKA822SIy0-WDg_cKNF94UR"
+
 [placement]
 mode = "smart"
 
