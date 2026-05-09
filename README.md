@@ -30,7 +30,7 @@ Base URL: `https://tools.mycelium.markets`
 | `POST /v1/search_news` | `{query, limit?}` | `{items: [{title, link, pub_date}]}` |
 | `POST /v1/fetch_url` | `{url, max_chars?}` | `{text, source: "jina" \| "raw"}` |
 | `POST /v1/encyclopedia_search` | `{query, limit?}` | `{results: [{source, title, snippet, url}]}` |
-| `POST /v1/prediction_market_search` | `{query, limit?}` | `{results: [{source, question, url, probability_pct, outcomes, end_date, volume}]}` |
+| `POST /v1/prediction_market_search` | `{query, limit?}` | `{results: [{source, question, url, probability_pct, end_date, volume}]}` |
 | `GET /` | — | `ok` |
 
 **Error contract.** Upstream failures return HTTP 200 with
@@ -63,7 +63,7 @@ src/
     search_news.rs      # Google News RSS
     fetch_url.rs        # Jina Reader + raw HTML fallback
     encyclopedia.rs     # Wikipedia + Grokipedia search merged in parallel
-    prediction_markets.rs  # Polymarket + Manifold search merged in parallel
+    prediction_markets.rs  # Polymarket + Manifold + Kalshi search merged in parallel
 ```
 
 ## Commands

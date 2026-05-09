@@ -10,18 +10,11 @@ struct Req {
 }
 
 #[derive(Serialize, Clone)]
-struct Outcome {
-    outcome: String,
-    probability_pct: f64,
-}
-
-#[derive(Serialize, Clone)]
 struct Item {
     source: String,
     question: String,
     url: String,
     probability_pct: Option<f64>,
-    outcomes: Option<Vec<Outcome>>,
     end_date: Option<String>,
     volume: f64,
 }
@@ -44,33 +37,28 @@ async fn execute(raw: Vec<u8>) -> Result<Vec<u8>> {
     }
     let limit = body.limit.unwrap_or(8).clamp(1, 50);
 
-    let (poly, manif) = futures::join!(
+    let (poly, manif, kal) = futures::join!(
         polymarket_search(&query, limit),
-        manifold_search(&query, limit)
+        manifold_search(&query, limit),
+        kalshi_search(&query, limit),
     );
 
-    let merged = interleave(poly, manif, limit);
+    let merged = interleave(vec![poly, manif, kal], limit);
     Ok(serde_json::to_vec(&Resp { results: merged })?)
 }
 
-fn interleave(a: Vec<Item>, b: Vec<Item>, limit: usize) -> Vec<Item> {
+fn interleave(sources: Vec<Vec<Item>>, limit: usize) -> Vec<Item> {
     let mut out = Vec::with_capacity(limit);
-    let mut ai = a.into_iter();
-    let mut bi = b.into_iter();
+    let mut iters: Vec<_> = sources.into_iter().map(|v| v.into_iter()).collect();
     loop {
         let mut pushed = false;
-        if let Some(x) = ai.next() {
-            out.push(x);
-            pushed = true;
-            if out.len() >= limit {
-                break;
-            }
-        }
-        if let Some(y) = bi.next() {
-            out.push(y);
-            pushed = true;
-            if out.len() >= limit {
-                break;
+        for it in iters.iter_mut() {
+            if let Some(x) = it.next() {
+                out.push(x);
+                pushed = true;
+                if out.len() >= limit {
+                    return out;
+                }
             }
         }
         if !pushed {
@@ -146,10 +134,10 @@ fn num(raw: &Option<serde_json::Value>) -> f64 {
     }
 }
 
-fn map_poly(m: &PolyMarket, event_slug: Option<&str>) -> Option<Item> {
+fn map_poly(m: &PolyMarket, event_slug: Option<&str>) -> Vec<Item> {
     let question = m.question.trim();
     if question.is_empty() || m.closed || m.archived {
-        return None;
+        return vec![];
     }
     let slug = if !m.slug.is_empty() {
         m.slug.clone()
@@ -168,45 +156,53 @@ fn map_poly(m: &PolyMarket, event_slug: Option<&str>) -> Option<Item> {
     } else {
         "https://polymarket.com/".to_string()
     };
+    let volume = num(&m.volume);
 
     let is_binary = outcomes.len() == 2
-        && outcomes
-            .iter()
-            .any(|o| o.eq_ignore_ascii_case("yes"))
-        && outcomes
-            .iter()
-            .any(|o| o.eq_ignore_ascii_case("no"));
+        && outcomes.iter().any(|o| o.eq_ignore_ascii_case("yes"))
+        && outcomes.iter().any(|o| o.eq_ignore_ascii_case("no"));
 
-    let (probability_pct, outcomes_out) = if is_binary {
+    if is_binary {
         let yes_idx = outcomes
             .iter()
             .position(|o| o.eq_ignore_ascii_case("yes"))
             .unwrap_or(0);
         let yes_price = prices.get(yes_idx).copied().unwrap_or(0.0);
-        (Some((yes_price * 100.0).clamp(0.0, 100.0)), None)
-    } else if outcomes.is_empty() {
-        (None, None)
-    } else {
-        let paired: Vec<Outcome> = outcomes
-            .into_iter()
-            .enumerate()
-            .map(|(i, o)| Outcome {
-                outcome: o,
-                probability_pct: (prices.get(i).copied().unwrap_or(0.0) * 100.0).clamp(0.0, 100.0),
-            })
-            .collect();
-        (None, Some(paired))
-    };
+        return vec![Item {
+            source: "polymarket".to_string(),
+            question: question.to_string(),
+            url,
+            probability_pct: Some((yes_price * 100.0).clamp(0.0, 100.0)),
+            end_date: m.end_date.clone(),
+            volume,
+        }];
+    }
 
-    Some(Item {
-        source: "polymarket".to_string(),
-        question: question.to_string(),
-        url,
-        probability_pct,
-        outcomes: outcomes_out,
-        end_date: m.end_date.clone(),
-        volume: num(&m.volume),
-    })
+    if outcomes.is_empty() {
+        return vec![Item {
+            source: "polymarket".to_string(),
+            question: question.to_string(),
+            url,
+            probability_pct: None,
+            end_date: m.end_date.clone(),
+            volume,
+        }];
+    }
+
+    outcomes
+        .into_iter()
+        .enumerate()
+        .map(|(i, o)| Item {
+            source: "polymarket".to_string(),
+            question: format!("{} — {}", question, o),
+            url: url.clone(),
+            probability_pct: Some(
+                (prices.get(i).copied().unwrap_or(0.0) * 100.0).clamp(0.0, 100.0),
+            ),
+            end_date: m.end_date.clone(),
+            volume,
+        })
+        .collect()
 }
 
 async fn polymarket_search(query: &str, limit: usize) -> Vec<Item> {
@@ -226,7 +222,7 @@ async fn polymarket_search(query: &str, limit: usize) -> Vec<Item> {
     let mut out = Vec::new();
     'outer: for ev in &parsed.events {
         for m in &ev.markets {
-            if let Some(mapped) = map_poly(m, ev.slug.as_deref()) {
+            for mapped in map_poly(m, ev.slug.as_deref()) {
                 out.push(mapped);
                 if out.len() >= limit {
                     break 'outer;
@@ -304,12 +300,119 @@ async fn manifold_search(query: &str, limit: usize) -> Vec<Item> {
                 question,
                 url,
                 probability_pct,
-                outcomes: None,
                 end_date,
                 volume,
             });
             if out.len() >= limit {
                 break;
+            }
+        }
+    }
+    out
+}
+
+#[derive(Deserialize)]
+struct KalshiMarket {
+    #[serde(default)]
+    ticker: String,
+    #[serde(default)]
+    title: String,
+    #[serde(default)]
+    yes_sub_title: String,
+    #[serde(default)]
+    status: String,
+    #[serde(default)]
+    last_price_dollars: String,
+    #[serde(default)]
+    volume_fp: String,
+    #[serde(default)]
+    close_time: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct KalshiEvent {
+    #[serde(default)]
+    event_ticker: String,
+    #[serde(default)]
+    series_ticker: String,
+    #[serde(default)]
+    title: String,
+    #[serde(default)]
+    sub_title: String,
+    #[serde(default)]
+    mutually_exclusive: bool,
+    #[serde(default)]
+    markets: Vec<KalshiMarket>,
+}
+
+#[derive(Deserialize)]
+struct KalshiResp {
+    #[serde(default)]
+    events: Vec<KalshiEvent>,
+}
+
+async fn kalshi_search(query: &str, limit: usize) -> Vec<Item> {
+    let url = "https://api.elections.kalshi.com/trade-api/v2/events?status=open&with_nested_markets=true&limit=200";
+    let json = match get_json(url, BOT_UA, TIMEOUT_DEFAULT_MS).await {
+        Ok(v) => v,
+        Err(e) => {
+            console_log!("kalshi_search failed: {}", e);
+            return vec![];
+        }
+    };
+    let parsed: KalshiResp = serde_json::from_value(json).unwrap_or(KalshiResp { events: vec![] });
+    let q = query.to_lowercase();
+    let mut out = Vec::new();
+    'outer: for ev in &parsed.events {
+        let event_match = ev.title.to_lowercase().contains(&q)
+            || ev.sub_title.to_lowercase().contains(&q)
+            || ev.event_ticker.to_lowercase().contains(&q)
+            || ev.series_ticker.to_lowercase().contains(&q);
+        for m in &ev.markets {
+            if m.status != "active" {
+                continue;
+            }
+            let market_match = m.title.to_lowercase().contains(&q)
+                || m.yes_sub_title.to_lowercase().contains(&q)
+                || m.ticker.to_lowercase().contains(&q);
+            if !event_match && !market_match {
+                continue;
+            }
+            let question = if ev.mutually_exclusive && !m.yes_sub_title.is_empty() {
+                format!("{} — {}", ev.title.trim(), m.yes_sub_title.trim())
+            } else if !m.title.is_empty() {
+                m.title.trim().to_string()
+            } else {
+                ev.title.trim().to_string()
+            };
+            if question.is_empty() {
+                continue;
+            }
+            let url = if !ev.series_ticker.is_empty() && !ev.event_ticker.is_empty() {
+                format!(
+                    "https://kalshi.com/markets/{}/{}",
+                    ev.series_ticker, ev.event_ticker
+                )
+            } else {
+                "https://kalshi.com/".to_string()
+            };
+            let last_price: f64 = m.last_price_dollars.parse().unwrap_or(0.0);
+            let probability_pct = if last_price > 0.0 {
+                Some((last_price * 100.0).clamp(0.0, 100.0))
+            } else {
+                None
+            };
+            let volume: f64 = m.volume_fp.parse().unwrap_or(0.0);
+            out.push(Item {
+                source: "kalshi".to_string(),
+                question,
+                url,
+                probability_pct,
+                end_date: m.close_time.clone(),
+                volume,
+            });
+            if out.len() >= limit {
+                break 'outer;
             }
         }
     }
