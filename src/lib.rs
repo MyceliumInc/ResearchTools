@@ -38,6 +38,10 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
     match result {
         Ok(mut resp) => {
             let status = resp.status_code();
+            if status == 404 {
+                console_log!("← {} {} 404 {}ms (no route)", method, path, ms);
+                return Ok(resp);
+            }
             if let (Some(tool), Some((url, key))) = (tool, supabase) {
                 let bytes = resp.bytes().await.unwrap_or_default();
                 let headers = resp.headers().clone();
