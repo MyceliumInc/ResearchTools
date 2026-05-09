@@ -1,7 +1,5 @@
+pub mod encyclopedia;
 pub mod fetch_url;
-pub mod grokipedia;
-pub mod manifold;
-pub mod polymarket;
+pub mod prediction_markets;
 pub mod search_news;
 pub mod search_web;
-pub mod wikipedia;

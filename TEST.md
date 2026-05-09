@@ -34,10 +34,8 @@ echo "== endpoints =="
 check search_web        /v1/search_web        '{"query":"cloudflare workers","limit":3}'        '.results | type == "array" and length > 0'
 check search_news       /v1/search_news       '{"query":"bitcoin","limit":3}'                   '.items   | type == "array"'
 check fetch_url         /v1/fetch_url         '{"url":"https://www.example.com","max_chars":500}' '.text    | type == "string" and length > 0'
-check wikipedia_summary /v1/wikipedia_summary '{"title":"Cloudflare"}'                          '.summary | type == "string" and length > 0'
-check grokipedia_search /v1/grokipedia_search '{"query":"ethereum","limit":3}'                  '.results | type == "array"'
-check polymarket_search /v1/polymarket_search '{"query":"election","limit":3}'                  '.results | type == "array"'
-check manifold_search   /v1/manifold_search   '{"query":"bitcoin","limit":3}'                   '.results | type == "array"'
+check encyclopedia_search /v1/encyclopedia_search '{"query":"2028 United States presidential election","limit":3}' '.results | type == "array" and length > 0'
+check prediction_market_search /v1/prediction_market_search '{"query":"2028 presidential election","limit":3}' '.results | type == "array"'
 ```
 
 ## Repeat N times (latency sample)

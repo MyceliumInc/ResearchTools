@@ -24,17 +24,11 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
         .post_async("/v1/fetch_url", |req, _| async move {
             tools::fetch_url::run(req).await
         })
-        .post_async("/v1/wikipedia_summary", |req, _| async move {
-            tools::wikipedia::run(req).await
+        .post_async("/v1/encyclopedia_search", |req, _| async move {
+            tools::encyclopedia::run(req).await
         })
-        .post_async("/v1/grokipedia_search", |req, _| async move {
-            tools::grokipedia::run(req).await
-        })
-        .post_async("/v1/polymarket_search", |req, _| async move {
-            tools::polymarket::run(req).await
-        })
-        .post_async("/v1/manifold_search", |req, _| async move {
-            tools::manifold::run(req).await
+        .post_async("/v1/prediction_market_search", |req, _| async move {
+            tools::prediction_markets::run(req).await
         })
         .run(req, env)
         .await;

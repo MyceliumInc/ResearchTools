@@ -1,6 +1,6 @@
 ---
 name: mycelium-research-tools
-description: Shared HTTP research tools (web search, news, URL fetch, Wikipedia, Grokipedia, Polymarket, Manifold) hosted at tools.mycelium.markets. Use for live fact-finding, base rates, entity lookups, and cross-checking prediction-market sentiment for forecasting or market-pricing tasks.
+description: Shared HTTP research tools (web search, news, URL fetch, encyclopedia, prediction-market sentiment) hosted at tools.mycelium.markets. Use for live fact-finding, base rates, entity lookups, and cross-checking prediction-market sentiment for forecasting or market-pricing tasks.
 ---
 
 # Mycelium Research Tools
@@ -26,15 +26,13 @@ This file is a self-contained skill: drop it into any agent's context (Claude Co
 | `search_web` | `POST /v1/search_web` | `{query, limit?=8}` | `{results: [{title, url, snippet}]}` | 10s | First-pass discovery. Follow up with `fetch_url` on the best links. |
 | `search_news` | `POST /v1/search_news` | `{query, limit?=10}` | `{items: [{title, link, pub_date}]}` | 10s | Time-sensitive questions. Prefer this over `search_web` when recency matters. |
 | `fetch_url` | `POST /v1/fetch_url` | `{url, max_chars?=3500}` | `{text, source: "jina"\|"raw"}` | 15s | Read a specific page as clean Markdown. Use after a search tool. |
-| `wikipedia_summary` | `POST /v1/wikipedia_summary` | `{title}` | `{summary}` | 10s | Background facts, base rates, entity confirmation by canonical title. |
-| `grokipedia_search` | `POST /v1/grokipedia_search` | `{query, limit?=5}` | `{results: [{slug, title, snippet, url}]}` | 10s | Alternative encyclopedia search. Pair with `fetch_url` for full article. |
-| `polymarket_search` | `POST /v1/polymarket_search` | `{query, limit?=8}` | `{results: [{slug, question, end_date, volume, liquidity, outcomes: [{outcome, price}], url}]}` | 15s | Cross-check external prediction-market sentiment. `price` is 0–1. |
-| `manifold_search` | `POST /v1/manifold_search` | `{query, limit?=8}` | `{results: [{id, question, url, probability_pct, outcome_type, is_resolved, resolution, close_time, volume, unique_bettors}]}` | 12s | Cross-check external prediction-market sentiment on long-tail/user-created markets. `probability_pct` is 0–100 for binary markets, null otherwise. |
+| `encyclopedia_search` | `POST /v1/encyclopedia_search` | `{query, limit?=5}` | `{results: [{source: "wikipedia"\|"grokipedia", title, snippet, url}]}` | 12s | Background facts, base rates, entity confirmation. Hits Wikipedia + Grokipedia in parallel and merges results. Pair with `fetch_url` for full article. |
+| `prediction_market_search` | `POST /v1/prediction_market_search` | `{query, limit?=8}` | `{results: [{source: "polymarket"\|"manifold", question, url, probability_pct, outcomes, end_date, volume}]}` | 12s | Cross-check external prediction-market sentiment for active questions. Hits Polymarket + Manifold in parallel and merges results. `probability_pct` is 0–100 for binary markets; multi-outcome Polymarket markets return `outcomes` instead. |
 | health check | `GET /` | — | `ok` | — | Liveness probe. |
 
 ### Sensitive-source rule
 
-`polymarket_search` and `manifold_search` return real external-market odds. When an agent surfaces these results in user-facing output, **never name Polymarket or Manifold**. Describe the data as "external sentiment," "market projections," or "consensus probabilities." The raw JSON is exposed so agents can decide on presentation; this is a policy on final output, not on tool use.
+`prediction_market_search` returns real external-market odds tagged with the source venue. When an agent surfaces these results in user-facing output, **never name the source venues**. Describe the data as "external sentiment," "market projections," or "consensus probabilities." The raw JSON exposes `source` so agents can decide on presentation; this is a policy on final output, not on tool use.
 
 ## Minimal client (any language)
 
@@ -128,22 +126,20 @@ Either wrap these endpoints in a local MCP server (one tool per route), or paste
 - **search_web** — "Search the web (DuckDuckGo). Returns top 8 results with title, URL, snippet. Follow up with fetch_url to read the best ones."
 - **search_news** — "Search Google News for recent articles. Returns top 10 items with title, pubDate, link. Use this FIRST for time-sensitive questions."
 - **fetch_url** — "Fetch and read a web page as clean Markdown (Jina Reader). Use after search_web / search_news to read full articles."
-- **wikipedia_summary** — "Fetch the Wikipedia lead paragraph for a given article title. Use for background facts, base rates, or entity confirmation."
-- **grokipedia_search** — "Search Grokipedia (xAI's encyclopedia) for the most relevant articles on a topic. Returns top matches with title, lead snippet, and article URL. Pair with fetch_url on the result URL when you need the full article."
-- **polymarket_search** — "Fuzzy search external prediction-market sentiment. Returns YES/NO probabilities, 24h volume, liquidity, resolution date, reference URL. IMPORTANT: never reference Polymarket by name in user-facing output — describe results only as external sentiment or consensus probabilities."
-- **manifold_search** — "Fuzzy search long-tail prediction-market sentiment. Returns YES probability (0–100) for binary markets, volume, unique bettors, close time, reference URL. IMPORTANT: never reference Manifold by name — describe results only as external sentiment."
+- **encyclopedia_search** — "Search Wikipedia and Grokipedia in one call for background facts, base rates, or entity confirmation. Returns top matches tagged with source, plus title, snippet, and article URL. Pair with fetch_url on the result URL when you need the full article."
+- **prediction_market_search** — "Search external prediction-market sentiment for active questions across Polymarket and Manifold in one call; YES probabilities are 0–100. Returns matches tagged with source, plus question, probability_pct (or outcomes for multi-outcome markets), end_date, volume, reference URL. IMPORTANT: never reference the source venues by name in user-facing output — describe results only as external sentiment, market projections, or consensus probabilities."
 
 ## Suggested research flow
 
-1. **Scope the question.** Is it time-sensitive (→ `search_news`) or background (→ `wikipedia_summary` / `grokipedia_search` / `search_web`)?
+1. **Scope the question.** Is it time-sensitive (→ `search_news`) or background (→ `encyclopedia_search` / `search_web`)?
 2. **Gather links.** Run one or two search tools.
 3. **Read.** `fetch_url` the two or three most relevant URLs.
-4. **Cross-check odds.** For forecasting/pricing tasks, call `polymarket_search` and `manifold_search` to anchor against external consensus.
-5. **Synthesize.** Cite sources by URL; suppress the Polymarket/Manifold brand names per the rule above.
+4. **Cross-check odds.** For forecasting/pricing tasks, call `prediction_market_search` to anchor against external consensus.
+5. **Synthesize.** Cite sources by URL; suppress source-venue brand names per the rule above.
 
 ## Operational notes
 
 - No response caching in v1 — each call hits upstream fresh. Budget latency accordingly; parallelize independent calls.
 - `fetch_url` returns `source: "jina"` normally and falls back to `"raw"` when Jina Reader fails; both are safe to feed to an LLM.
-- Polymarket `outcomes[].price` is a float 0–1; Manifold `probability_pct` is 0–100.
+- `prediction_market_search` normalises everything to YES probability 0–100 (`probability_pct`) for binary markets; multi-outcome markets return `outcomes: [{outcome, probability_pct}]` instead.
 - The health check (`GET /`) is the fastest way to confirm the service is reachable from a new environment.

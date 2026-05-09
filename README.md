@@ -2,8 +2,8 @@
 
 Shared HTTP tools service for Mycelium agents. Rust Cloudflare Worker at
 `tools.mycelium.markets`. Exposes the research/sentiment tools (search, fetch,
-Wikipedia, Wikidata, Grokipedia, Google News, Polymarket, Manifold) that used
-to live inside `Site/lib/agents/tools/`.
+encyclopedia, Google News, prediction-market sentiment) that used to live inside
+`Site/lib/agents/tools/`.
 
 Both the Site agents (Creator, Pricer) and external callers (MCP, partner
 bots) hit the same endpoints — one source of truth, fast edge deploys, no
@@ -29,18 +29,16 @@ Base URL: `https://tools.mycelium.markets`
 | `POST /v1/search_web` | `{query, limit?}` | `{results: [{title, url, snippet}]}` |
 | `POST /v1/search_news` | `{query, limit?}` | `{items: [{title, link, pub_date}]}` |
 | `POST /v1/fetch_url` | `{url, max_chars?}` | `{text, source: "jina" \| "raw"}` |
-| `POST /v1/wikipedia_summary` | `{title}` | `{summary}` |
-| `POST /v1/grokipedia_search` | `{query, limit?}` | `{results: [{slug, title, snippet, url}]}` |
-| `POST /v1/polymarket_search` | `{query, limit?}` | `{results: [...]}` |
-| `POST /v1/manifold_search` | `{query, limit?}` | `{results: [...]}` |
+| `POST /v1/encyclopedia_search` | `{query, limit?}` | `{results: [{source, title, snippet, url}]}` |
+| `POST /v1/prediction_market_search` | `{query, limit?}` | `{results: [{source, question, url, probability_pct, outcomes, end_date, volume}]}` |
 | `GET /` | — | `ok` |
 
 **Error contract.** Upstream failures return HTTP 200 with
 `{"error": "<message>"}` so callers can surface a soft error to the LLM
 without a retry loop. Bad requests return 4xx; worker bugs return 5xx.
 
-Default limits: 8 (search_web, polymarket, manifold), 10 (search_news),
-5 (grokipedia), 3500 chars (fetch_url).
+Default limits: 8 (search_web, prediction_market_search), 10 (search_news),
+5 (encyclopedia_search), 3500 chars (fetch_url).
 
 ## Shape notes
 
@@ -48,10 +46,10 @@ Responses are **structured JSON**, not pre-formatted strings. Site-side
 wrappers (`Site/lib/agents/tools/*.ts`) handle the LangChain `formatX` step.
 External callers can render however they like.
 
-Polymarket / Manifold responses intentionally expose the upstream slug, URL,
-and prices so callers can decide how to present them. The "never reference
-Polymarket/Manifold by name" rule is enforced in the Site wrappers' LangChain
-tool descriptions, not here.
+`prediction_market_search` responses intentionally expose the upstream URL
+and per-source `source` field so callers can decide how to present them. The
+"never reference source venues by name" rule is enforced in the Site wrappers'
+LangChain tool descriptions, not here.
 
 ## Layout
 
@@ -64,10 +62,8 @@ src/
     search_web.rs       # DuckDuckGo Lite SERP scrape
     search_news.rs      # Google News RSS
     fetch_url.rs        # Jina Reader + raw HTML fallback
-    wikipedia.rs        # Wikipedia REST summary
-    grokipedia.rs       # Grokipedia typeahead
-    polymarket.rs       # Gamma public-search
-    manifold.rs         # Manifold markets search
+    encyclopedia.rs     # Wikipedia + Grokipedia search merged in parallel
+    prediction_markets.rs  # Polymarket + Manifold search merged in parallel
 ```
 
 ## Commands
