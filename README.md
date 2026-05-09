@@ -2,9 +2,8 @@
 
 Shared HTTP tools service for Mycelium agents. Rust Cloudflare Worker at
 `tools.mycelium.markets`. Exposes the research/sentiment tools (search, fetch,
-Wikipedia, Wikidata, Grokipedia, Google News, Polymarket, Manifold, SEC
-EDGAR, NWS weather, USGS earthquakes) that used to live inside
-`Site/lib/agents/tools/`.
+Wikipedia, Wikidata, Grokipedia, Google News, Polymarket, Manifold) that used
+to live inside `Site/lib/agents/tools/`.
 
 Both the Site agents (Creator, Pricer) and external callers (MCP, partner
 bots) hit the same endpoints — one source of truth, fast edge deploys, no
@@ -34,17 +33,14 @@ Base URL: `https://tools.mycelium.markets`
 | `POST /v1/grokipedia_search` | `{query, limit?}` | `{results: [{slug, title, snippet, url}]}` |
 | `POST /v1/polymarket_search` | `{query, limit?}` | `{results: [...]}` |
 | `POST /v1/manifold_search` | `{query, limit?}` | `{results: [...]}` |
-| `POST /v1/sec_filings` | `{query, limit?}` | `{results: [...]}` |
-| `POST /v1/weather_forecast` | `{lat, lon}` | `{periods: [...]}` |
-| `POST /v1/usgs_earthquakes` | `{min_magnitude?, limit?}` | `{quakes: [...]}` |
 | `GET /` | — | `ok` |
 
 **Error contract.** Upstream failures return HTTP 200 with
 `{"error": "<message>"}` so callers can surface a soft error to the LLM
 without a retry loop. Bad requests return 4xx; worker bugs return 5xx.
 
-Default limits: 8 (search_web, polymarket, manifold), 10 (search_news,
-sec_filings), 5 (grokipedia), 20 (usgs_earthquakes), 3500 chars (fetch_url).
+Default limits: 8 (search_web, polymarket, manifold), 10 (search_news),
+5 (grokipedia), 3500 chars (fetch_url).
 
 ## Shape notes
 
@@ -72,9 +68,6 @@ src/
     grokipedia.rs       # Grokipedia typeahead
     polymarket.rs       # Gamma public-search
     manifold.rs         # Manifold markets search
-    sec.rs              # SEC EDGAR full-text search
-    weather.rs          # NWS forecast
-    usgs_earthquakes.rs # USGS recent quakes
 ```
 
 ## Commands

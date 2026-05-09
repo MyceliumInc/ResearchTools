@@ -36,15 +36,6 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
         .post_async("/v1/manifold_search", |req, _| async move {
             tools::manifold::run(req).await
         })
-        .post_async("/v1/usgs_earthquakes", |req, _| async move {
-            tools::usgs_earthquakes::run(req).await
-        })
-        .post_async("/v1/sec_filings", |req, _| async move {
-            tools::sec::run(req).await
-        })
-        .post_async("/v1/weather_forecast", |req, _| async move {
-            tools::weather::run(req).await
-        })
         .run(req, env)
         .await;
 

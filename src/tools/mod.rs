@@ -4,7 +4,4 @@ pub mod manifold;
 pub mod polymarket;
 pub mod search_news;
 pub mod search_web;
-pub mod sec;
-pub mod usgs_earthquakes;
-pub mod weather;
 pub mod wikipedia;
