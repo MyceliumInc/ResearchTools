@@ -51,37 +51,61 @@ pub async fn run(mut req: Request) -> Result<Response> {
     let cap = body.max_chars.unwrap_or(FETCH_CAP).clamp(100, 50_000);
 
     let reader = format!("https://r.jina.ai/{}", body.url);
-    match fetch_text(&reader, BOT_UA, Some("text/plain")).await {
-        Ok((status, text)) if status < 400 => {
-            let out = if text.is_empty() {
-                "Empty page.".to_string()
+    let (jina, raw) = futures::future::join(
+        fetch_text(&reader, BOT_UA, Some("text/plain")),
+        fetch_text(&body.url, BOT_UA, None),
+    )
+    .await;
+
+    let jina_text = match &jina {
+        Ok((status, text)) if !text.trim().is_empty() => Some((*status, text.clone())),
+        _ => None,
+    };
+    let raw_stripped = match &raw {
+        Ok((status, text)) => {
+            let stripped = strip_html_doc(text);
+            if stripped.trim().is_empty() {
+                None
             } else {
-                truncate(&text, cap)
-            };
+                Some((*status, stripped))
+            }
+        }
+        _ => None,
+    };
+
+    if let Some((status, text)) = &jina_text {
+        if *status < 400 {
             return Response::from_json(&Resp {
-                text: out,
+                text: truncate(text, cap),
                 source: "jina",
             });
         }
-        _ => {}
+    }
+    if let Some((status, text)) = &raw_stripped {
+        if *status < 400 {
+            return Response::from_json(&Resp {
+                text: truncate(text, cap),
+                source: "raw",
+            });
+        }
+    }
+    if let Some((_, text)) = jina_text {
+        return Response::from_json(&Resp {
+            text: truncate(&text, cap),
+            source: "jina",
+        });
+    }
+    if let Some((_, text)) = raw_stripped {
+        return Response::from_json(&Resp {
+            text: truncate(&text, cap),
+            source: "raw",
+        });
     }
 
-    match fetch_text(&body.url, BOT_UA, None).await {
-        Ok((status, _)) if status >= 400 => {
-            return error_response(format!("Fetch failed: HTTP {}", status));
-        }
-        Ok((_, raw)) => {
-            let stripped = strip_html_doc(&raw);
-            let out = if stripped.is_empty() {
-                "Empty page.".to_string()
-            } else {
-                truncate(&stripped, cap)
-            };
-            Response::from_json(&Resp {
-                text: out,
-                source: "raw",
-            })
-        }
-        Err(e) => error_response(format!("Fetch failed: {}", e)),
-    }
+    let detail = match (&jina, &raw) {
+        (Err(e), _) => format!("Fetch failed: {}", e),
+        (_, Err(e)) => format!("Fetch failed: {}", e),
+        (Ok((s1, _)), Ok((s2, _))) => format!("Fetch failed: HTTP {}/{}", s1, s2),
+    };
+    error_response(detail)
 }
