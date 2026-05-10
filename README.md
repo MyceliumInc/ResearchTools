@@ -1,26 +1,17 @@
 # Mycelium Tools
 
-Shared HTTP tools service for Mycelium agents. Rust Cloudflare Worker at
-`tools.mycelium.markets`. Exposes the research/sentiment tools (search, fetch,
-encyclopedia, Google News, prediction-market sentiment) that used to live inside
-`Site/lib/agents/tools/`.
+Shared HTTP research tools for Mycelium agents. Rust Cloudflare Worker at
+`tools.mycelium.markets`. Hosts the search/fetch/encyclopedia/news/prediction-
+market sentiment tools that used to live inside `Site/lib/agents/tools/`.
 
-Both the Site agents (Creator, Pricer) and external callers (MCP, partner
-bots) hit the same endpoints — one source of truth, fast edge deploys, no
-duplicated implementations.
-
-## Why this exists
-
-- **One impl, many callers.** Site's Pricer, MCP agents, and anyone else use
-  the same tools by URL.
-- **Edge-local + fast.** Rust + WASM on the same Cloudflare POPs as Site and
-  MCP; tool calls never leave Cloudflare's network when invoked from another
-  Worker.
+Both first-party agents (Creator, Pricer in Site; Spore reference agent) and
+external callers (MCP, partner bots) hit the same endpoints — one impl, fast
+edge deploys, no duplicated scrapers.
 
 ## Endpoints
 
-All endpoints are `POST`, accept `application/json`, and return
-`application/json`. No authentication — the service is public.
+All endpoints are `POST application/json` and return `application/json`. No
+authentication — the service is public.
 
 Base URL: `https://tools.mycelium.markets`
 
@@ -33,37 +24,46 @@ Base URL: `https://tools.mycelium.markets`
 | `POST /v1/prediction_market_search` | `{query, limit?}` | `{results: [{source, question, url, probability_pct, end_date, volume}]}` |
 | `GET /` | — | `ok` |
 
+Default limits: 8 (`search_web`, `prediction_market_search`), 10
+(`search_news`), 5 (`encyclopedia_search`), 3500 chars (`fetch_url`).
+
 **Error contract.** Upstream failures return HTTP 200 with
 `{"error": "<message>"}` so callers can surface a soft error to the LLM
 without a retry loop. Bad requests return 4xx; worker bugs return 5xx.
 
-Default limits: 8 (search_web, prediction_market_search), 10 (search_news),
-5 (encyclopedia_search), 3500 chars (fetch_url).
-
 ## Shape notes
 
 Responses are **structured JSON**, not pre-formatted strings. Site-side
-wrappers (`Site/lib/agents/tools/*.ts`) handle the LangChain `formatX` step.
-External callers can render however they like.
+wrappers in `Site/lib/agents/tools/*.ts` handle the LangChain `formatX` step
+and POST through `Site/lib/agents/tools/client.ts`. External callers render
+however they like.
 
-`prediction_market_search` responses intentionally expose the upstream URL
-and per-source `source` field so callers can decide how to present them. The
-"never reference source venues by name" rule is enforced in the Site wrappers'
-LangChain tool descriptions, not here.
+`prediction_market_search` exposes the upstream `url` and `source` per result
+so callers can decide how to present them. The "never reference source venues
+by name" rule is enforced in the Site wrappers' LangChain tool descriptions,
+not here.
+
+## Self-reported uptime
+
+Each `/v1/*` handler reports `(tool, ms, status, error)` to
+`public.uptime_record` via `ctx.wait_until` after responding — no caller-
+visible latency, no synthetic probe. Records reflect real agent traffic and
+are visible to admins at Site's `/admin/health` (`public.uptime_summary` +
+`public.uptime_series`). Idle tools render as "no traffic in <window>".
 
 ## Layout
 
 ```
 src/
-  lib.rs            # worker entry + router
-  util.rs           # fetch w/ timeout + shared helpers
+  lib.rs                  # entry, router, uptime wrapper
+  util.rs                 # fetch w/ timeout + helpers
+  uptime.rs               # uptime payload + record()
   tools/
-    mod.rs
-    search_web.rs       # DuckDuckGo Lite SERP scrape
-    search_news.rs      # Google News RSS
-    fetch_url.rs        # Jina Reader + raw HTML fallback
-    encyclopedia.rs     # Wikipedia + Grokipedia search merged in parallel
-    prediction_markets.rs  # Polymarket + Manifold + Kalshi search merged in parallel
+    search_web.rs         # DuckDuckGo Lite
+    search_news.rs        # Google News RSS
+    fetch_url.rs          # Jina Reader + raw fallback
+    encyclopedia.rs       # Wikipedia + Grokipedia
+    prediction_markets.rs # Polymarket + Manifold + Kalshi
 ```
 
 ## Commands
@@ -71,24 +71,23 @@ src/
 ```bash
 cd Tools
 cargo install -q worker-build      # once
-bun run dev        # wrangler dev
-bun run deploy     # wrangler deploy
-cargo test         # unit tests
+bun run dev                         # wrangler dev (worker-build --dev)
+bun run deploy                      # wrangler deploy (worker-build --release)
+cargo test
 ```
 
-`wrangler.toml` pins `main = "build/worker/shim.mjs"`, which `worker-build`
-generates from the Rust crate. `nodejs_compat` is NOT required — this is a
-pure-Rust WASM worker.
+`wrangler.toml` pins `main = "build/worker/shim.mjs"`, generated by
+`worker-build`. `nodejs_compat` is NOT required — pure-Rust WASM worker.
+`SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` (browser-safe) live under
+`[vars]` so uptime self-reporting works.
 
 ## Adding a tool
 
-1. New file `src/tools/<name>.rs` exporting `pub async fn run(req: Request) -> Result<Response>`.
-2. Add a `pub mod <name>;` line to `src/tools/mod.rs`.
-3. Add a route in `src/lib.rs`'s `Router` block.
-4. Add a thin wrapper in `Site/lib/agents/tools/<name>.ts` that calls the new
-   endpoint and keeps the `formatX` + LangChain `tool(...)` shape.
+See `CLAUDE.md` for the in-repo recipe. The cross-repo touchpoints (Site
+wrapper, agent research-tools-skill, MCP/Spore plumbing) are enumerated by
+the root `edit-tools` skill — run it before opening the PR.
 
 ## Not in scope
 
-`search_markets` stays on Site — it hits Supabase via the service-role client
-and depends on per-request auth context. Do not move it here.
+`search_markets` stays on Site: it hits Supabase via the service-role client
+and depends on per-request auth context.

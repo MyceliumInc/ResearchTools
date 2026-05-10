@@ -1,35 +1,66 @@
-# Tools — Mycelium HTTP tools worker
+# Tools — implementer notes
 
 Rust Cloudflare Worker at `tools.mycelium.markets`. See `README.md` for the
-HTTP contract, route table, and commands.
+HTTP contract and route table.
 
-## Implementer notes
+## Layout
 
-- **No auth, by design.** The endpoint is public; tools scrape public sources.
-  Do not add bearer tokens without a reason.
-- **No URL response caching in v1.** Fetch upstream fresh each call. If you
-  add caching later, use the Cloudflare Cache API.
+```
+src/
+  lib.rs            # worker entry + router + uptime wrapper
+  util.rs           # fetch w/ AbortController timeout + shared helpers
+  uptime.rs         # detect_soft_error + record() → public.uptime_record
+  tools/
+    search_web.rs           # DuckDuckGo Lite SERP scrape
+    search_news.rs          # Google News RSS
+    fetch_url.rs            # Jina Reader + raw HTML fallback
+    encyclopedia.rs         # Wikipedia + Grokipedia (parallel merge)
+    prediction_markets.rs   # Polymarket + Manifold + Kalshi (parallel merge)
+```
+
+Routes are wired in `src/lib.rs`'s `Router` block. Every `/v1/*` POST handler
+returns `Result<Response>`; the wrapper in `fetch()` reads the response body,
+sniffs for soft `{error}` payloads, and `ctx.wait_until`s a post to
+`public.uptime_record` so the caller never waits.
+
+## Conventions
+
+- **No auth, by design.** Endpoint is public; tools only scrape public sources.
+- **No URL response caching in v1.** Fetch upstream fresh each call. Add
+  Cloudflare Cache API later if needed.
 - **Errors as HTTP 200 + `{error}`.** Upstream failures surface as a soft
-  error so the LLM doesn't trigger a retry loop. Bad requests return 4xx;
-  worker bugs return 5xx.
-- **Upstream timeouts** are enforced via `AbortController` in `src/util.rs`
-  (6–20s, mirroring the old TS values).
+  error so the LLM doesn't trigger a retry loop. Bad input → 4xx; worker
+  bugs → 5xx.
+- **Upstream timeouts** via `AbortController` in `src/util.rs` (6–20s).
 - **No `unsafe`, no `panic!` in handler paths.** Surface failures via the
   error JSON.
-- **No `scraper` / `html5ever`.** They inflate the WASM bundle by >1 MB; use
-  `regex` patterns and `quick-xml` instead.
+- **No `scraper` / `html5ever` / `regex` deps.** They inflate the WASM bundle.
+  Use byte-pattern matching + `quick-xml` instead. Current deps: `worker`,
+  `serde`, `serde_json`, `quick-xml`, `urlencoding`, `futures`, `once_cell`.
 - **`nodejs_compat` is NOT required** — pure-Rust WASM worker.
+- **Structured JSON, not preformatted strings.** Site-side wrappers do the
+  LangChain `formatX` step; external callers render however they like.
 
-## Uptime
+## Uptime self-reporting
 
-Each `/v1/*` handler self-reports `(tool, ms, status, error)` to
-`helpers.uptime` via `ctx.wait_until` after responding — the central wrapper
-in `src/lib.rs` reads the response body, sniffs for soft `{error}` payloads,
-and posts to `public.uptime_record` (anon-callable `SECURITY DEFINER` RPC)
-without adding latency to the caller. Records reflect real agent traffic;
-tools that aren't called show as "no traffic in <window>" at `/admin/health`.
+`src/lib.rs` `fetch()` records `(tool, ms, status, error)` after the response
+goes out. `tool_from_path` extracts the slug after `/v1/`. Soft errors are
+detected by JSON-parsing the body for an `error` field. `SUPABASE_URL` and
+`SUPABASE_PUBLISHABLE_KEY` are bound as `[vars]` in `wrangler.toml` — the
+publishable key is the same one Site ships in its browser bundle, so it's
+not a secret. 404s skip recording. Records reflect real agent traffic; idle
+tools render as "no traffic in <window>" at Site `/admin/health`.
 
-`SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` are bound as `[vars]` in
-`wrangler.toml`. The publishable key is the same one shipped in Site's
-browser bundle, so it's not a secret. Cache-hit responses are recorded too —
-their low ms reflects reality.
+## Adding a tool
+
+1. New file `src/tools/<name>.rs` exporting `pub async fn run(req: Request) -> Result<Response>`.
+2. Add `pub mod <name>;` to `src/tools/mod.rs`.
+3. Add a `.post_async("/v1/<name>", …)` line to the router in `src/lib.rs`.
+4. **Run the root `edit-tools` skill** (`/Users/benny/Code/Mycelium/.claude/skills/edit-tools`)
+   for the cross-repo checklist — Site wrapper in `Site/lib/agents/tools/`,
+   research-tools-skill description, and any MCP/Spore plumbing.
+
+## Not in scope
+
+`search_markets` stays on Site — it hits Supabase via the service-role
+client and depends on per-request auth context. Do not move it here.
