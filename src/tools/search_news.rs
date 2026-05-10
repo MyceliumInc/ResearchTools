@@ -101,15 +101,11 @@ pub async fn run(mut req: Request) -> Result<Response> {
     let limit = body.limit.unwrap_or(10).clamp(1, 50);
     let q = urlencoding::encode(&body.query);
 
-    let google = format!("https://news.google.com/rss/search?q={}&hl=en-US&gl=US&ceid=US:en", q);
     let bing = format!("https://www.bing.com/news/search?q={}&format=rss", q);
 
-    let items = match try_source(&google).await {
-        Ok(items) if !items.is_empty() => items,
-        _ => match try_source(&bing).await {
-            Ok(v) => v,
-            Err(e) => return error_response(format!("News search failed: {}", e)),
-        },
+    let items = match try_source(&bing).await {
+        Ok(v) => v,
+        Err(e) => return error_response(format!("News search failed: {}", e)),
     };
 
     let mut items = items;
