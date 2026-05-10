@@ -1,5 +1,6 @@
 use worker::*;
 
+mod docs;
 mod tools;
 mod uptime;
 mod util;
@@ -15,6 +16,7 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
 
     let result = Router::new()
         .get("/", |_, _| Response::ok("ok"))
+        .get("/docs", |_, _| docs::page())
         .post_async("/v1/search_web", |req, ctx| async move {
             tools::search_web::run(req, ctx).await
         })
