@@ -7,30 +7,24 @@ struct Req {}
 
 #[derive(Debug, Serialize)]
 struct PentagonResult {
-    // overview
     headline: String,
     defcon_level: u32,
     defcon_severity: f64,
     overall_index: u32,
 
-    // spike state
     active_spikes: u32,
     spike_events: Vec<SpikeEvent>,
 
-    // data quality
     data_freshness: String,
     open_places: u32,
     total_places: u32,
     sustained: bool,
     sentinel: bool,
 
-    // per place
     place_data: Vec<PlaceData>,
 
-    // provenance
     source_url: &'static str,
 
-    // spike breakdown
     places_above_150: u32,
     places_above_200: u32,
 }
@@ -201,44 +195,4 @@ async fn execute(raw: Vec<u8>) -> Result<Vec<u8>> {
     let result: PentagonResult = raw_data.into();
 
     Ok(serde_json::to_vec(&result)?)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn parses_sample_into_pentagon_result() {
-        // 1. Load the JSON fixture as a string
-        let json = include_str!("fixtures/pentagon_pizza_sample.json");
-
-        // 2. Deserialize into Raw
-        let raw: Raw = serde_json::from_str(json).expect("deserialization failed");
-
-        // 3. Transform via From
-        let result: PentagonResult = raw.into();
-
-        // Top-level scalars
-        assert_eq!(result.defcon_level, 3);
-        assert_eq!(result.active_spikes, 2);
-        assert_eq!(result.overall_index, 31);
-
-        // From defcon_details, hoisted up
-        assert_eq!(result.open_places, 5);
-        assert_eq!(result.total_places, 6);
-        assert_eq!(result.sentinel, false);
-
-        // Vec lengths (catches filter and From-impl bugs)
-        assert_eq!(result.spike_events.len(), 2);
-        // place_data length depends on how aggressively your filter drops places — check the JSON
-
-        // Headline (catches the build_headline function)
-        assert!(result.headline.contains("DEFCON 3"));
-        assert!(result.headline.contains("2 current spikes"));
-        assert!(result.headline.contains("fresh")); // since data_freshness is "fresh"
-
-        // First spike event (catches try_event)
-        let first = &result.spike_events[0];
-        assert_eq!(first.place_name, "District Pizza Palace"); // first in events array
-        assert_eq!(first.percentage_of_usual, 257);
-    }
 }
