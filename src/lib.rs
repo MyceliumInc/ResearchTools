@@ -32,6 +32,9 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
         .post_async("/v1/prediction_market_search", |req, _| async move {
             tools::prediction_markets::run(req).await
         })
+        .post_async("/v1/pentagon_pizza", |req, _| async move {
+            tools::pentagon_pizza::run(req).await
+        })
         .run(req, env)
         .await;
 
