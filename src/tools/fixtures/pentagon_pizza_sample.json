@@ -1,0 +1,4091 @@
+{
+  "success": true,
+  "data": [
+    {
+      "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+      "name": "Extreme Pizza",
+      "address": "https://www.google.com/maps/place/Extreme+Pizza/@38.8602396,-77.0585603,17z/data=!3m1!4b1!4m6!3m5!1s0x89b7b72778ab8871:0x3762c646ac6ddfe1!8m2!3d38.8602396!4d-77.0559854!16s%2Fg%2F12llsn19l?entry=ttu&g_ep=EgoyMDI1MDYxNi4wIKXMDSoASAFQAw%3D%3D",
+      "current_popularity": 0,
+      "percentage_of_usual": 0,
+      "is_spike": false,
+      "spike_magnitude": null,
+      "data_source": "live",
+      "recorded_at": "2026-05-18T20:09:33.431+00:00",
+      "data_freshness": "stale",
+      "sparkline_24h": [
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 29,
+          "recorded_at": "2026-05-17T21:10:27.627+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-17T22:09:54.032+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 51,
+          "recorded_at": "2026-05-17T23:09:37.818+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T00:10:01.737+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 35,
+          "recorded_at": "2026-05-18T01:10:29.568+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T02:11:40.331+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T03:10:39.317+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T04:09:22.681+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T05:08:22.356+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T06:10:22.468+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T07:11:32.994+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T08:09:37.106+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T09:09:06.115+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T10:08:23.071+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T11:07:15.783+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T12:10:58.93+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T13:11:45.732+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T14:07:43.915+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 18,
+          "recorded_at": "2026-05-18T15:07:25.457+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 38,
+          "recorded_at": "2026-05-18T16:07:26.21+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 54,
+          "recorded_at": "2026-05-18T17:09:40.578+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 41,
+          "recorded_at": "2026-05-18T18:09:21.76+00:00"
+        },
+        {
+          "place_id": "ChIJcYireCe3t4kR4d9trEbGYjc",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T20:09:33.431+00:00"
+        }
+      ],
+      "baseline_popular_times": {
+        "0": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 29
+          },
+          {
+            "hour": 12,
+            "popularity": 35
+          },
+          {
+            "hour": 13,
+            "popularity": 35
+          },
+          {
+            "hour": 14,
+            "popularity": 33
+          },
+          {
+            "hour": 15,
+            "popularity": 34
+          },
+          {
+            "hour": 16,
+            "popularity": 46
+          },
+          {
+            "hour": 17,
+            "popularity": 53
+          },
+          {
+            "hour": 18,
+            "popularity": 57
+          },
+          {
+            "hour": 19,
+            "popularity": 57
+          },
+          {
+            "hour": 20,
+            "popularity": 44
+          },
+          {
+            "hour": 21,
+            "popularity": 34
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "1": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 44
+          },
+          {
+            "hour": 12,
+            "popularity": 59
+          },
+          {
+            "hour": 13,
+            "popularity": 56
+          },
+          {
+            "hour": 14,
+            "popularity": 56
+          },
+          {
+            "hour": 15,
+            "popularity": 53
+          },
+          {
+            "hour": 16,
+            "popularity": 56
+          },
+          {
+            "hour": 17,
+            "popularity": 62
+          },
+          {
+            "hour": 18,
+            "popularity": 70
+          },
+          {
+            "hour": 19,
+            "popularity": 80
+          },
+          {
+            "hour": 20,
+            "popularity": 82
+          },
+          {
+            "hour": 21,
+            "popularity": 73
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "2": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 33
+          },
+          {
+            "hour": 12,
+            "popularity": 39
+          },
+          {
+            "hour": 13,
+            "popularity": 42
+          },
+          {
+            "hour": 14,
+            "popularity": 44
+          },
+          {
+            "hour": 15,
+            "popularity": 52
+          },
+          {
+            "hour": 16,
+            "popularity": 59
+          },
+          {
+            "hour": 17,
+            "popularity": 69
+          },
+          {
+            "hour": 18,
+            "popularity": 73
+          },
+          {
+            "hour": 19,
+            "popularity": 73
+          },
+          {
+            "hour": 20,
+            "popularity": 59
+          },
+          {
+            "hour": 21,
+            "popularity": 44
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "3": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 38
+          },
+          {
+            "hour": 12,
+            "popularity": 41
+          },
+          {
+            "hour": 13,
+            "popularity": 49
+          },
+          {
+            "hour": 14,
+            "popularity": 43
+          },
+          {
+            "hour": 15,
+            "popularity": 45
+          },
+          {
+            "hour": 16,
+            "popularity": 47
+          },
+          {
+            "hour": 17,
+            "popularity": 50
+          },
+          {
+            "hour": 18,
+            "popularity": 59
+          },
+          {
+            "hour": 19,
+            "popularity": 58
+          },
+          {
+            "hour": 20,
+            "popularity": 51
+          },
+          {
+            "hour": 21,
+            "popularity": 42
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "4": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 34
+          },
+          {
+            "hour": 12,
+            "popularity": 36
+          },
+          {
+            "hour": 13,
+            "popularity": 42
+          },
+          {
+            "hour": 14,
+            "popularity": 48
+          },
+          {
+            "hour": 15,
+            "popularity": 64
+          },
+          {
+            "hour": 16,
+            "popularity": 67
+          },
+          {
+            "hour": 17,
+            "popularity": 69
+          },
+          {
+            "hour": 18,
+            "popularity": 69
+          },
+          {
+            "hour": 19,
+            "popularity": 70
+          },
+          {
+            "hour": 20,
+            "popularity": 56
+          },
+          {
+            "hour": 21,
+            "popularity": 41
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "5": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 31
+          },
+          {
+            "hour": 12,
+            "popularity": 36
+          },
+          {
+            "hour": 13,
+            "popularity": 36
+          },
+          {
+            "hour": 14,
+            "popularity": 34
+          },
+          {
+            "hour": 15,
+            "popularity": 40
+          },
+          {
+            "hour": 16,
+            "popularity": 48
+          },
+          {
+            "hour": 17,
+            "popularity": 66
+          },
+          {
+            "hour": 18,
+            "popularity": 81
+          },
+          {
+            "hour": 19,
+            "popularity": 100
+          },
+          {
+            "hour": 20,
+            "popularity": 91
+          },
+          {
+            "hour": 21,
+            "popularity": 73
+          },
+          {
+            "hour": 22,
+            "popularity": 54
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "6": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 32
+          },
+          {
+            "hour": 12,
+            "popularity": 40
+          },
+          {
+            "hour": 13,
+            "popularity": 44
+          },
+          {
+            "hour": 14,
+            "popularity": 42
+          },
+          {
+            "hour": 15,
+            "popularity": 44
+          },
+          {
+            "hour": 16,
+            "popularity": 48
+          },
+          {
+            "hour": 17,
+            "popularity": 53
+          },
+          {
+            "hour": 18,
+            "popularity": 58
+          },
+          {
+            "hour": 19,
+            "popularity": 64
+          },
+          {
+            "hour": 20,
+            "popularity": 63
+          },
+          {
+            "hour": 21,
+            "popularity": 59
+          },
+          {
+            "hour": 22,
+            "popularity": 54
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ]
+      },
+      "is_closed_now": false
+    },
+    {
+      "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+      "name": "District Pizza Palace",
+      "address": "https://www.google.com/maps/place/District+Pizza+Palace/@38.8527414,-77.0557157,17z/data=!3m1!4b1!4m6!3m5!1s0x89b7b77b2d1e64e3:0x70a3f6ac71ef0a9c!8m2!3d38.8527414!4d-77.0531408!16s%2Fg%2F11vc1fb80v?entry=ttu&g_ep=EgoyMDI1MDYxNi4wIKXMDSoASAFQAw%3D%3D",
+      "current_popularity": 72,
+      "percentage_of_usual": 257,
+      "is_spike": true,
+      "spike_magnitude": "EXTREME",
+      "data_source": "live",
+      "recorded_at": "2026-05-18T20:09:42.62+00:00",
+      "data_freshness": "stale",
+      "sparkline_24h": [
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-17T21:10:36.033+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 7,
+          "recorded_at": "2026-05-17T22:10:02.413+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-17T23:09:45.902+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T00:10:09.909+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T01:10:40.919+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 79,
+          "recorded_at": "2026-05-18T02:11:48.405+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 84,
+          "recorded_at": "2026-05-18T03:10:50.029+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T04:09:30.735+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T05:08:30.51+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T06:10:30.847+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T07:11:41.212+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T08:09:45.505+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T09:09:14.281+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T10:08:31.38+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T11:07:24.07+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T12:11:07.739+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T13:11:53.985+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T14:07:52.361+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T15:07:34.002+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T16:07:34.576+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T17:09:49.166+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T18:09:30.337+00:00"
+        },
+        {
+          "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+          "current_popularity": 72,
+          "recorded_at": "2026-05-18T20:09:42.62+00:00"
+        }
+      ],
+      "baseline_popular_times": {
+        "0": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 25
+          },
+          {
+            "hour": 12,
+            "popularity": 31
+          },
+          {
+            "hour": 13,
+            "popularity": 37
+          },
+          {
+            "hour": 14,
+            "popularity": 40
+          },
+          {
+            "hour": 15,
+            "popularity": 34
+          },
+          {
+            "hour": 16,
+            "popularity": 42
+          },
+          {
+            "hour": 17,
+            "popularity": 48
+          },
+          {
+            "hour": 18,
+            "popularity": 60
+          },
+          {
+            "hour": 19,
+            "popularity": 60
+          },
+          {
+            "hour": 20,
+            "popularity": 54
+          },
+          {
+            "hour": 21,
+            "popularity": 48
+          },
+          {
+            "hour": 22,
+            "popularity": 45
+          },
+          {
+            "hour": 23,
+            "popularity": 40
+          }
+        ],
+        "1": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 20
+          },
+          {
+            "hour": 12,
+            "popularity": 25
+          },
+          {
+            "hour": 13,
+            "popularity": 22
+          },
+          {
+            "hour": 14,
+            "popularity": 34
+          },
+          {
+            "hour": 15,
+            "popularity": 20
+          },
+          {
+            "hour": 16,
+            "popularity": 28
+          },
+          {
+            "hour": 17,
+            "popularity": 34
+          },
+          {
+            "hour": 18,
+            "popularity": 68
+          },
+          {
+            "hour": 19,
+            "popularity": 82
+          },
+          {
+            "hour": 20,
+            "popularity": 77
+          },
+          {
+            "hour": 21,
+            "popularity": 54
+          },
+          {
+            "hour": 22,
+            "popularity": 40
+          },
+          {
+            "hour": 23,
+            "popularity": 28
+          }
+        ],
+        "2": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 22
+          },
+          {
+            "hour": 12,
+            "popularity": 28
+          },
+          {
+            "hour": 13,
+            "popularity": 22
+          },
+          {
+            "hour": 14,
+            "popularity": 25
+          },
+          {
+            "hour": 15,
+            "popularity": 40
+          },
+          {
+            "hour": 16,
+            "popularity": 57
+          },
+          {
+            "hour": 17,
+            "popularity": 62
+          },
+          {
+            "hour": 18,
+            "popularity": 57
+          },
+          {
+            "hour": 19,
+            "popularity": 45
+          },
+          {
+            "hour": 20,
+            "popularity": 37
+          },
+          {
+            "hour": 21,
+            "popularity": 45
+          },
+          {
+            "hour": 22,
+            "popularity": 34
+          },
+          {
+            "hour": 23,
+            "popularity": 20
+          }
+        ],
+        "3": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 42
+          },
+          {
+            "hour": 12,
+            "popularity": 48
+          },
+          {
+            "hour": 13,
+            "popularity": 45
+          },
+          {
+            "hour": 14,
+            "popularity": 40
+          },
+          {
+            "hour": 15,
+            "popularity": 28
+          },
+          {
+            "hour": 16,
+            "popularity": 28
+          },
+          {
+            "hour": 17,
+            "popularity": 34
+          },
+          {
+            "hour": 18,
+            "popularity": 31
+          },
+          {
+            "hour": 19,
+            "popularity": 37
+          },
+          {
+            "hour": 20,
+            "popularity": 40
+          },
+          {
+            "hour": 21,
+            "popularity": 54
+          },
+          {
+            "hour": 22,
+            "popularity": 62
+          },
+          {
+            "hour": 23,
+            "popularity": 62
+          }
+        ],
+        "4": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 54
+          },
+          {
+            "hour": 12,
+            "popularity": 57
+          },
+          {
+            "hour": 13,
+            "popularity": 34
+          },
+          {
+            "hour": 14,
+            "popularity": 25
+          },
+          {
+            "hour": 15,
+            "popularity": 22
+          },
+          {
+            "hour": 16,
+            "popularity": 28
+          },
+          {
+            "hour": 17,
+            "popularity": 40
+          },
+          {
+            "hour": 18,
+            "popularity": 48
+          },
+          {
+            "hour": 19,
+            "popularity": 57
+          },
+          {
+            "hour": 20,
+            "popularity": 45
+          },
+          {
+            "hour": 21,
+            "popularity": 40
+          },
+          {
+            "hour": 22,
+            "popularity": 40
+          },
+          {
+            "hour": 23,
+            "popularity": 37
+          }
+        ],
+        "5": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 28
+          },
+          {
+            "hour": 12,
+            "popularity": 40
+          },
+          {
+            "hour": 13,
+            "popularity": 45
+          },
+          {
+            "hour": 14,
+            "popularity": 48
+          },
+          {
+            "hour": 15,
+            "popularity": 40
+          },
+          {
+            "hour": 16,
+            "popularity": 45
+          },
+          {
+            "hour": 17,
+            "popularity": 42
+          },
+          {
+            "hour": 18,
+            "popularity": 54
+          },
+          {
+            "hour": 19,
+            "popularity": 51
+          },
+          {
+            "hour": 20,
+            "popularity": 68
+          },
+          {
+            "hour": 21,
+            "popularity": 71
+          },
+          {
+            "hour": 22,
+            "popularity": 62
+          },
+          {
+            "hour": 23,
+            "popularity": 51
+          },
+          {
+            "hour": 0,
+            "popularity": 37
+          }
+        ],
+        "6": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 17
+          },
+          {
+            "hour": 12,
+            "popularity": 20
+          },
+          {
+            "hour": 13,
+            "popularity": 34
+          },
+          {
+            "hour": 14,
+            "popularity": 40
+          },
+          {
+            "hour": 15,
+            "popularity": 37
+          },
+          {
+            "hour": 16,
+            "popularity": 40
+          },
+          {
+            "hour": 17,
+            "popularity": 51
+          },
+          {
+            "hour": 18,
+            "popularity": 62
+          },
+          {
+            "hour": 19,
+            "popularity": 88
+          },
+          {
+            "hour": 20,
+            "popularity": 100
+          },
+          {
+            "hour": 21,
+            "popularity": 82
+          },
+          {
+            "hour": 22,
+            "popularity": 68
+          },
+          {
+            "hour": 23,
+            "popularity": 45
+          },
+          {
+            "hour": 0,
+            "popularity": 25
+          }
+        ]
+      },
+      "is_closed_now": false
+    },
+    {
+      "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+      "name": "We, The Pizza",
+      "address": "https://www.google.com/maps/place/We,+The+Pizza/@38.8663614,-77.0588449,15.76z/data=!3m1!5s0x89b7b72f331803b7:0x7edf0a3adffa41c8!4m6!3m5!1s0x89b7b72f38e95a4b:0xc933eda7e98cbcb0!8m2!3d38.8551791!4d-77.049733!16s%2Fg%2F1q62g66vf?entry=ttu&g_ep=EgoyMDI1MDYxNi4wIKXMDSoASAFQAw%3D%3D",
+      "current_popularity": null,
+      "percentage_of_usual": null,
+      "is_spike": false,
+      "spike_magnitude": null,
+      "data_source": "none",
+      "recorded_at": "2026-05-18T20:46:00.356Z",
+      "data_freshness": "fresh",
+      "sparkline_24h": [
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-17T21:10:44.891+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-17T22:10:11.126+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-17T23:09:54.324+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T00:10:18.79+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T01:10:49.77+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T02:11:57.28+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T03:10:58.441+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T04:09:38.805+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T05:08:39.319+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T06:10:38.973+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T07:11:52.345+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T08:09:53.741+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T09:09:23.03+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T10:08:40.233+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T11:07:32.82+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T12:11:16.326+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T13:12:02.73+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T14:08:00.917+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T15:07:42.723+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T16:07:43.409+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T17:09:57.724+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T18:09:38.994+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T19:08:24.418+00:00"
+        },
+        {
+          "place_id": "ChIJS1rpOC-3t4kRsLyM6aftM8k",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T20:09:51.932+00:00"
+        }
+      ],
+      "baseline_popular_times": {
+        "0": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 27
+          },
+          {
+            "hour": 12,
+            "popularity": 39
+          },
+          {
+            "hour": 13,
+            "popularity": 40
+          },
+          {
+            "hour": 14,
+            "popularity": 47
+          },
+          {
+            "hour": 15,
+            "popularity": 65
+          },
+          {
+            "hour": 16,
+            "popularity": 78
+          },
+          {
+            "hour": 17,
+            "popularity": 94
+          },
+          {
+            "hour": 18,
+            "popularity": 85
+          },
+          {
+            "hour": 19,
+            "popularity": 78
+          },
+          {
+            "hour": 20,
+            "popularity": 61
+          },
+          {
+            "hour": 21,
+            "popularity": 0
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "1": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 48
+          },
+          {
+            "hour": 11,
+            "popularity": 56
+          },
+          {
+            "hour": 12,
+            "popularity": 82
+          },
+          {
+            "hour": 13,
+            "popularity": 81
+          },
+          {
+            "hour": 14,
+            "popularity": 89
+          },
+          {
+            "hour": 15,
+            "popularity": 72
+          },
+          {
+            "hour": 16,
+            "popularity": 76
+          },
+          {
+            "hour": 17,
+            "popularity": 84
+          },
+          {
+            "hour": 18,
+            "popularity": 98
+          },
+          {
+            "hour": 19,
+            "popularity": 100
+          },
+          {
+            "hour": 20,
+            "popularity": 81
+          },
+          {
+            "hour": 21,
+            "popularity": 56
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "2": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 42
+          },
+          {
+            "hour": 11,
+            "popularity": 67
+          },
+          {
+            "hour": 12,
+            "popularity": 92
+          },
+          {
+            "hour": 13,
+            "popularity": 93
+          },
+          {
+            "hour": 14,
+            "popularity": 84
+          },
+          {
+            "hour": 15,
+            "popularity": 76
+          },
+          {
+            "hour": 16,
+            "popularity": 76
+          },
+          {
+            "hour": 17,
+            "popularity": 82
+          },
+          {
+            "hour": 18,
+            "popularity": 90
+          },
+          {
+            "hour": 19,
+            "popularity": 80
+          },
+          {
+            "hour": 20,
+            "popularity": 57
+          },
+          {
+            "hour": 21,
+            "popularity": 38
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "3": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 50
+          },
+          {
+            "hour": 11,
+            "popularity": 63
+          },
+          {
+            "hour": 12,
+            "popularity": 77
+          },
+          {
+            "hour": 13,
+            "popularity": 71
+          },
+          {
+            "hour": 14,
+            "popularity": 64
+          },
+          {
+            "hour": 15,
+            "popularity": 71
+          },
+          {
+            "hour": 16,
+            "popularity": 75
+          },
+          {
+            "hour": 17,
+            "popularity": 90
+          },
+          {
+            "hour": 18,
+            "popularity": 94
+          },
+          {
+            "hour": 19,
+            "popularity": 80
+          },
+          {
+            "hour": 20,
+            "popularity": 52
+          },
+          {
+            "hour": 21,
+            "popularity": 35
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "4": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 51
+          },
+          {
+            "hour": 11,
+            "popularity": 64
+          },
+          {
+            "hour": 12,
+            "popularity": 77
+          },
+          {
+            "hour": 13,
+            "popularity": 75
+          },
+          {
+            "hour": 14,
+            "popularity": 61
+          },
+          {
+            "hour": 15,
+            "popularity": 61
+          },
+          {
+            "hour": 16,
+            "popularity": 69
+          },
+          {
+            "hour": 17,
+            "popularity": 86
+          },
+          {
+            "hour": 18,
+            "popularity": 80
+          },
+          {
+            "hour": 19,
+            "popularity": 81
+          },
+          {
+            "hour": 20,
+            "popularity": 65
+          },
+          {
+            "hour": 21,
+            "popularity": 61
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "5": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 52
+          },
+          {
+            "hour": 11,
+            "popularity": 73
+          },
+          {
+            "hour": 12,
+            "popularity": 92
+          },
+          {
+            "hour": 13,
+            "popularity": 81
+          },
+          {
+            "hour": 14,
+            "popularity": 63
+          },
+          {
+            "hour": 15,
+            "popularity": 47
+          },
+          {
+            "hour": 16,
+            "popularity": 46
+          },
+          {
+            "hour": 17,
+            "popularity": 57
+          },
+          {
+            "hour": 18,
+            "popularity": 68
+          },
+          {
+            "hour": 19,
+            "popularity": 73
+          },
+          {
+            "hour": 20,
+            "popularity": 67
+          },
+          {
+            "hour": 21,
+            "popularity": 53
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ],
+        "6": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 63
+          },
+          {
+            "hour": 12,
+            "popularity": 73
+          },
+          {
+            "hour": 13,
+            "popularity": 57
+          },
+          {
+            "hour": 14,
+            "popularity": 42
+          },
+          {
+            "hour": 15,
+            "popularity": 34
+          },
+          {
+            "hour": 16,
+            "popularity": 44
+          },
+          {
+            "hour": 17,
+            "popularity": 65
+          },
+          {
+            "hour": 18,
+            "popularity": 69
+          },
+          {
+            "hour": 19,
+            "popularity": 65
+          },
+          {
+            "hour": 20,
+            "popularity": 50
+          },
+          {
+            "hour": 21,
+            "popularity": 44
+          },
+          {
+            "hour": 22,
+            "popularity": 0
+          },
+          {
+            "hour": 23,
+            "popularity": 0
+          }
+        ]
+      },
+      "is_closed_now": false
+    },
+    {
+      "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+      "name": "Papa Johns Pizza",
+      "address": "https://www.google.com/maps/place/Papa+Johns+Pizza/@38.8292633,-77.1901741,11.83z/data=!4m6!3m5!1s0x89b7b77f69c14da3:0xa3bad34a334f286f!8m2!3d38.8606821!4d-77.0922272!16s%2Fg%2F11t104lmtl?entry=ttu&g_ep=EgoyMDI1MDYxNy4wIKXMDSoASAFQAw%3D%3D",
+      "current_popularity": 34,
+      "percentage_of_usual": 68,
+      "is_spike": false,
+      "spike_magnitude": null,
+      "data_source": "live",
+      "recorded_at": "2026-05-18T20:10:18.589+00:00",
+      "data_freshness": "stale",
+      "sparkline_24h": [
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-17T21:11:10.393+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-17T22:10:37.849+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-17T23:10:19.831+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 40,
+          "recorded_at": "2026-05-18T00:10:44.373+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 32,
+          "recorded_at": "2026-05-18T01:11:15.127+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 4,
+          "recorded_at": "2026-05-18T02:12:25.673+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T03:11:23.95+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T04:10:03.925+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T05:09:08.245+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T06:11:06.637+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T07:12:22.217+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T08:10:27.225+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T09:09:48.569+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T10:09:05.976+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T11:07:58.785+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T12:11:42.161+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T13:12:28.553+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T14:08:27.077+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T15:08:10.407+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T16:08:09.455+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T17:10:23.845+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T18:10:05.419+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T19:08:51.785+00:00"
+        },
+        {
+          "place_id": "ChIJo03BaX-3t4kRbyhPM0rTuqM",
+          "current_popularity": 34,
+          "recorded_at": "2026-05-18T20:10:18.589+00:00"
+        }
+      ],
+      "baseline_popular_times": {
+        "0": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 34
+          },
+          {
+            "hour": 11,
+            "popularity": 50
+          },
+          {
+            "hour": 12,
+            "popularity": 65
+          },
+          {
+            "hour": 13,
+            "popularity": 62
+          },
+          {
+            "hour": 14,
+            "popularity": 65
+          },
+          {
+            "hour": 15,
+            "popularity": 65
+          },
+          {
+            "hour": 16,
+            "popularity": 59
+          },
+          {
+            "hour": 17,
+            "popularity": 50
+          },
+          {
+            "hour": 18,
+            "popularity": 43
+          },
+          {
+            "hour": 19,
+            "popularity": 40
+          },
+          {
+            "hour": 20,
+            "popularity": 40
+          },
+          {
+            "hour": 21,
+            "popularity": 50
+          },
+          {
+            "hour": 22,
+            "popularity": 59
+          },
+          {
+            "hour": 23,
+            "popularity": 53
+          }
+        ],
+        "1": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 9
+          },
+          {
+            "hour": 11,
+            "popularity": 15
+          },
+          {
+            "hour": 12,
+            "popularity": 25
+          },
+          {
+            "hour": 13,
+            "popularity": 28
+          },
+          {
+            "hour": 14,
+            "popularity": 31
+          },
+          {
+            "hour": 15,
+            "popularity": 50
+          },
+          {
+            "hour": 16,
+            "popularity": 50
+          },
+          {
+            "hour": 17,
+            "popularity": 50
+          },
+          {
+            "hour": 18,
+            "popularity": 59
+          },
+          {
+            "hour": 19,
+            "popularity": 62
+          },
+          {
+            "hour": 20,
+            "popularity": 59
+          },
+          {
+            "hour": 21,
+            "popularity": 40
+          },
+          {
+            "hour": 22,
+            "popularity": 31
+          },
+          {
+            "hour": 23,
+            "popularity": 28
+          }
+        ],
+        "2": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 18
+          },
+          {
+            "hour": 11,
+            "popularity": 34
+          },
+          {
+            "hour": 12,
+            "popularity": 43
+          },
+          {
+            "hour": 13,
+            "popularity": 43
+          },
+          {
+            "hour": 14,
+            "popularity": 50
+          },
+          {
+            "hour": 15,
+            "popularity": 43
+          },
+          {
+            "hour": 16,
+            "popularity": 40
+          },
+          {
+            "hour": 17,
+            "popularity": 53
+          },
+          {
+            "hour": 18,
+            "popularity": 46
+          },
+          {
+            "hour": 19,
+            "popularity": 56
+          },
+          {
+            "hour": 20,
+            "popularity": 46
+          },
+          {
+            "hour": 21,
+            "popularity": 53
+          },
+          {
+            "hour": 22,
+            "popularity": 46
+          },
+          {
+            "hour": 23,
+            "popularity": 34
+          }
+        ],
+        "3": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 37
+          },
+          {
+            "hour": 11,
+            "popularity": 43
+          },
+          {
+            "hour": 12,
+            "popularity": 37
+          },
+          {
+            "hour": 13,
+            "popularity": 40
+          },
+          {
+            "hour": 14,
+            "popularity": 28
+          },
+          {
+            "hour": 15,
+            "popularity": 31
+          },
+          {
+            "hour": 16,
+            "popularity": 43
+          },
+          {
+            "hour": 17,
+            "popularity": 62
+          },
+          {
+            "hour": 18,
+            "popularity": 62
+          },
+          {
+            "hour": 19,
+            "popularity": 62
+          },
+          {
+            "hour": 20,
+            "popularity": 56
+          },
+          {
+            "hour": 21,
+            "popularity": 53
+          },
+          {
+            "hour": 22,
+            "popularity": 40
+          },
+          {
+            "hour": 23,
+            "popularity": 31
+          }
+        ],
+        "4": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 21
+          },
+          {
+            "hour": 11,
+            "popularity": 25
+          },
+          {
+            "hour": 12,
+            "popularity": 40
+          },
+          {
+            "hour": 13,
+            "popularity": 46
+          },
+          {
+            "hour": 14,
+            "popularity": 53
+          },
+          {
+            "hour": 15,
+            "popularity": 46
+          },
+          {
+            "hour": 16,
+            "popularity": 56
+          },
+          {
+            "hour": 17,
+            "popularity": 59
+          },
+          {
+            "hour": 18,
+            "popularity": 87
+          },
+          {
+            "hour": 19,
+            "popularity": 84
+          },
+          {
+            "hour": 20,
+            "popularity": 75
+          },
+          {
+            "hour": 21,
+            "popularity": 53
+          },
+          {
+            "hour": 22,
+            "popularity": 37
+          },
+          {
+            "hour": 23,
+            "popularity": 31
+          }
+        ],
+        "5": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 53
+          },
+          {
+            "hour": 11,
+            "popularity": 37
+          },
+          {
+            "hour": 12,
+            "popularity": 34
+          },
+          {
+            "hour": 13,
+            "popularity": 31
+          },
+          {
+            "hour": 14,
+            "popularity": 31
+          },
+          {
+            "hour": 15,
+            "popularity": 50
+          },
+          {
+            "hour": 16,
+            "popularity": 62
+          },
+          {
+            "hour": 17,
+            "popularity": 84
+          },
+          {
+            "hour": 18,
+            "popularity": 100
+          },
+          {
+            "hour": 19,
+            "popularity": 93
+          },
+          {
+            "hour": 20,
+            "popularity": 87
+          },
+          {
+            "hour": 21,
+            "popularity": 71
+          },
+          {
+            "hour": 22,
+            "popularity": 62
+          },
+          {
+            "hour": 23,
+            "popularity": 53
+          },
+          {
+            "hour": 0,
+            "popularity": 37
+          }
+        ],
+        "6": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 43
+          },
+          {
+            "hour": 11,
+            "popularity": 53
+          },
+          {
+            "hour": 12,
+            "popularity": 50
+          },
+          {
+            "hour": 13,
+            "popularity": 53
+          },
+          {
+            "hour": 14,
+            "popularity": 56
+          },
+          {
+            "hour": 15,
+            "popularity": 71
+          },
+          {
+            "hour": 16,
+            "popularity": 81
+          },
+          {
+            "hour": 17,
+            "popularity": 75
+          },
+          {
+            "hour": 18,
+            "popularity": 62
+          },
+          {
+            "hour": 19,
+            "popularity": 40
+          },
+          {
+            "hour": 20,
+            "popularity": 37
+          },
+          {
+            "hour": 21,
+            "popularity": 37
+          },
+          {
+            "hour": 22,
+            "popularity": 43
+          },
+          {
+            "hour": 23,
+            "popularity": 50
+          },
+          {
+            "hour": 0,
+            "popularity": 37
+          }
+        ]
+      },
+      "is_closed_now": false
+    },
+    {
+      "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+      "name": "Pizzato Pizza",
+      "address": "https://www.google.com/maps/place/Pizzato+Pizza/@38.8791607,-77.096414,15.18z/data=!4m6!3m5!1s0x89b7b709fda7b8ad:0x583383fdc3ad2c55!8m2!3d38.8806865!4d-77.089827!16s%2Fg%2F11v5zglw6h?entry=ttu&g_ep=EgoyMDI1MDYxNy4wIKXMDSoASAFQAw%3D%3D",
+      "current_popularity": 31,
+      "percentage_of_usual": 60,
+      "is_spike": false,
+      "spike_magnitude": null,
+      "data_source": "live",
+      "recorded_at": "2026-05-18T20:10:27.237+00:00",
+      "data_freshness": "stale",
+      "sparkline_24h": [
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 65,
+          "recorded_at": "2026-05-17T21:11:18.719+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-17T22:10:46.365+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-17T23:10:27.781+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T00:10:52.305+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T01:11:26.184+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T02:12:33.631+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T03:11:34.125+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T04:10:14.096+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T05:09:16.119+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 34,
+          "recorded_at": "2026-05-18T06:11:15.982+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T07:12:32.479+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T08:10:37.642+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T09:09:56.536+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T10:09:13.854+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T11:08:06.842+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T12:11:50.111+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T13:12:36.601+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T14:08:35.058+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 16,
+          "recorded_at": "2026-05-18T15:08:18.591+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 6,
+          "recorded_at": "2026-05-18T16:08:17.517+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 31,
+          "recorded_at": "2026-05-18T17:10:31.94+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 2,
+          "recorded_at": "2026-05-18T18:10:13.708+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T19:09:00.171+00:00"
+        },
+        {
+          "place_id": "ChIJrbin_Qm3t4kRVSytw_2DM1g",
+          "current_popularity": 31,
+          "recorded_at": "2026-05-18T20:10:27.237+00:00"
+        }
+      ],
+      "baseline_popular_times": {
+        "0": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 40
+          },
+          {
+            "hour": 12,
+            "popularity": 48
+          },
+          {
+            "hour": 13,
+            "popularity": 60
+          },
+          {
+            "hour": 14,
+            "popularity": 92
+          },
+          {
+            "hour": 15,
+            "popularity": 100
+          },
+          {
+            "hour": 16,
+            "popularity": 88
+          },
+          {
+            "hour": 17,
+            "popularity": 84
+          },
+          {
+            "hour": 18,
+            "popularity": 72
+          },
+          {
+            "hour": 19,
+            "popularity": 64
+          },
+          {
+            "hour": 20,
+            "popularity": 52
+          },
+          {
+            "hour": 21,
+            "popularity": 36
+          },
+          {
+            "hour": 22,
+            "popularity": 36
+          },
+          {
+            "hour": 23,
+            "popularity": 36
+          },
+          {
+            "hour": 0,
+            "popularity": 36
+          },
+          {
+            "hour": 1,
+            "popularity": 40
+          },
+          {
+            "hour": 2,
+            "popularity": 40
+          }
+        ],
+        "1": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 24
+          },
+          {
+            "hour": 12,
+            "popularity": 32
+          },
+          {
+            "hour": 13,
+            "popularity": 40
+          },
+          {
+            "hour": 14,
+            "popularity": 48
+          },
+          {
+            "hour": 15,
+            "popularity": 48
+          },
+          {
+            "hour": 16,
+            "popularity": 52
+          },
+          {
+            "hour": 17,
+            "popularity": 64
+          },
+          {
+            "hour": 18,
+            "popularity": 60
+          },
+          {
+            "hour": 19,
+            "popularity": 52
+          },
+          {
+            "hour": 20,
+            "popularity": 32
+          },
+          {
+            "hour": 21,
+            "popularity": 48
+          },
+          {
+            "hour": 22,
+            "popularity": 68
+          },
+          {
+            "hour": 23,
+            "popularity": 84
+          },
+          {
+            "hour": 0,
+            "popularity": 56
+          },
+          {
+            "hour": 1,
+            "popularity": 40
+          },
+          {
+            "hour": 2,
+            "popularity": 48
+          }
+        ],
+        "2": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 36
+          },
+          {
+            "hour": 12,
+            "popularity": 40
+          },
+          {
+            "hour": 13,
+            "popularity": 28
+          },
+          {
+            "hour": 14,
+            "popularity": 24
+          },
+          {
+            "hour": 15,
+            "popularity": 20
+          },
+          {
+            "hour": 16,
+            "popularity": 32
+          },
+          {
+            "hour": 17,
+            "popularity": 40
+          },
+          {
+            "hour": 18,
+            "popularity": 56
+          },
+          {
+            "hour": 19,
+            "popularity": 68
+          },
+          {
+            "hour": 20,
+            "popularity": 84
+          },
+          {
+            "hour": 21,
+            "popularity": 68
+          },
+          {
+            "hour": 22,
+            "popularity": 56
+          },
+          {
+            "hour": 23,
+            "popularity": 40
+          },
+          {
+            "hour": 0,
+            "popularity": 28
+          },
+          {
+            "hour": 1,
+            "popularity": 28
+          },
+          {
+            "hour": 2,
+            "popularity": 28
+          }
+        ],
+        "3": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 48
+          },
+          {
+            "hour": 12,
+            "popularity": 48
+          },
+          {
+            "hour": 13,
+            "popularity": 56
+          },
+          {
+            "hour": 14,
+            "popularity": 44
+          },
+          {
+            "hour": 15,
+            "popularity": 44
+          },
+          {
+            "hour": 16,
+            "popularity": 36
+          },
+          {
+            "hour": 17,
+            "popularity": 40
+          },
+          {
+            "hour": 18,
+            "popularity": 48
+          },
+          {
+            "hour": 19,
+            "popularity": 48
+          },
+          {
+            "hour": 20,
+            "popularity": 60
+          },
+          {
+            "hour": 21,
+            "popularity": 52
+          },
+          {
+            "hour": 22,
+            "popularity": 48
+          },
+          {
+            "hour": 23,
+            "popularity": 44
+          },
+          {
+            "hour": 0,
+            "popularity": 28
+          },
+          {
+            "hour": 1,
+            "popularity": 24
+          },
+          {
+            "hour": 2,
+            "popularity": 16
+          }
+        ],
+        "4": [
+          {
+            "hour": 14,
+            "popularity": 60
+          },
+          {
+            "hour": 15,
+            "popularity": 36
+          },
+          {
+            "hour": 16,
+            "popularity": 32
+          },
+          {
+            "hour": 17,
+            "popularity": 40
+          },
+          {
+            "hour": 18,
+            "popularity": 36
+          },
+          {
+            "hour": 19,
+            "popularity": 36
+          },
+          {
+            "hour": 20,
+            "popularity": 40
+          },
+          {
+            "hour": 21,
+            "popularity": 48
+          },
+          {
+            "hour": 22,
+            "popularity": 56
+          },
+          {
+            "hour": 23,
+            "popularity": 60
+          },
+          {
+            "hour": 0,
+            "popularity": 56
+          },
+          {
+            "hour": 1,
+            "popularity": 52
+          },
+          {
+            "hour": 2,
+            "popularity": 48
+          },
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 60
+          },
+          {
+            "hour": 12,
+            "popularity": 76
+          },
+          {
+            "hour": 13,
+            "popularity": 60
+          }
+        ],
+        "5": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 48
+          },
+          {
+            "hour": 12,
+            "popularity": 64
+          },
+          {
+            "hour": 13,
+            "popularity": 68
+          },
+          {
+            "hour": 14,
+            "popularity": 68
+          },
+          {
+            "hour": 15,
+            "popularity": 56
+          },
+          {
+            "hour": 16,
+            "popularity": 64
+          },
+          {
+            "hour": 17,
+            "popularity": 52
+          },
+          {
+            "hour": 18,
+            "popularity": 72
+          },
+          {
+            "hour": 19,
+            "popularity": 60
+          },
+          {
+            "hour": 20,
+            "popularity": 56
+          },
+          {
+            "hour": 21,
+            "popularity": 48
+          },
+          {
+            "hour": 22,
+            "popularity": 40
+          },
+          {
+            "hour": 23,
+            "popularity": 32
+          },
+          {
+            "hour": 0,
+            "popularity": 36
+          },
+          {
+            "hour": 1,
+            "popularity": 28
+          },
+          {
+            "hour": 2,
+            "popularity": 32
+          },
+          {
+            "hour": 3,
+            "popularity": 16
+          }
+        ],
+        "6": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 0
+          },
+          {
+            "hour": 11,
+            "popularity": 28
+          },
+          {
+            "hour": 12,
+            "popularity": 40
+          },
+          {
+            "hour": 13,
+            "popularity": 36
+          },
+          {
+            "hour": 14,
+            "popularity": 32
+          },
+          {
+            "hour": 15,
+            "popularity": 36
+          },
+          {
+            "hour": 16,
+            "popularity": 52
+          },
+          {
+            "hour": 17,
+            "popularity": 76
+          },
+          {
+            "hour": 18,
+            "popularity": 80
+          },
+          {
+            "hour": 19,
+            "popularity": 56
+          },
+          {
+            "hour": 20,
+            "popularity": 56
+          },
+          {
+            "hour": 21,
+            "popularity": 56
+          },
+          {
+            "hour": 22,
+            "popularity": 68
+          },
+          {
+            "hour": 23,
+            "popularity": 68
+          },
+          {
+            "hour": 0,
+            "popularity": 52
+          },
+          {
+            "hour": 1,
+            "popularity": 48
+          },
+          {
+            "hour": 2,
+            "popularity": 48
+          },
+          {
+            "hour": 3,
+            "popularity": 36
+          }
+        ]
+      },
+      "is_closed_now": false
+    },
+    {
+      "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+      "name": "Domino's Pizza (Pentagon Closest)",
+      "address": "https://www.google.com/maps/place/Domino's+Pizza/@38.8627308,-77.0879692,17z/data=!3m1!4b1!4m6!3m5!1s0x89b7b6ba2b02a023:0x15622e1516edc315!8m2!3d38.8627267!4d-77.0853943!16s%2Fg%2F1wbryp46?entry=ttu&g_ep=EgoyMDI1MDYxNi4wIKXMDSoASAFQAw%3D%3D",
+      "current_popularity": 93,
+      "percentage_of_usual": 211,
+      "is_spike": true,
+      "spike_magnitude": "EXTREME",
+      "data_source": "live",
+      "recorded_at": "2026-05-18T20:10:35.951+00:00",
+      "data_freshness": "stale",
+      "sparkline_24h": [
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 6,
+          "recorded_at": "2026-05-17T21:11:27.49+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 33,
+          "recorded_at": "2026-05-17T22:10:55.117+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-17T23:10:36.053+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 15,
+          "recorded_at": "2026-05-18T00:11:00.755+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T01:11:36.148+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 0,
+          "recorded_at": "2026-05-18T02:12:41.759+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T03:11:43.165+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T04:10:24.852+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T05:09:24.129+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T06:11:27.376+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T07:12:43.218+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T08:10:48.307+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T09:10:04.885+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T10:09:22.273+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T11:08:15.565+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T12:11:58.764+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": null,
+          "recorded_at": "2026-05-18T13:12:45.294+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 8,
+          "recorded_at": "2026-05-18T14:08:43.425+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 20,
+          "recorded_at": "2026-05-18T15:08:27.45+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 64,
+          "recorded_at": "2026-05-18T16:08:26.269+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T17:10:40.729+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 6,
+          "recorded_at": "2026-05-18T18:10:22.182+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 100,
+          "recorded_at": "2026-05-18T19:09:09.286+00:00"
+        },
+        {
+          "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+          "current_popularity": 93,
+          "recorded_at": "2026-05-18T20:10:35.951+00:00"
+        }
+      ],
+      "baseline_popular_times": {
+        "0": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 48
+          },
+          {
+            "hour": 11,
+            "popularity": 48
+          },
+          {
+            "hour": 12,
+            "popularity": 36
+          },
+          {
+            "hour": 13,
+            "popularity": 24
+          },
+          {
+            "hour": 14,
+            "popularity": 20
+          },
+          {
+            "hour": 15,
+            "popularity": 24
+          },
+          {
+            "hour": 16,
+            "popularity": 28
+          },
+          {
+            "hour": 17,
+            "popularity": 36
+          },
+          {
+            "hour": 18,
+            "popularity": 60
+          },
+          {
+            "hour": 19,
+            "popularity": 72
+          },
+          {
+            "hour": 20,
+            "popularity": 100
+          },
+          {
+            "hour": 21,
+            "popularity": 88
+          },
+          {
+            "hour": 22,
+            "popularity": 68
+          },
+          {
+            "hour": 23,
+            "popularity": 72
+          }
+        ],
+        "1": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 20
+          },
+          {
+            "hour": 11,
+            "popularity": 16
+          },
+          {
+            "hour": 12,
+            "popularity": 24
+          },
+          {
+            "hour": 13,
+            "popularity": 48
+          },
+          {
+            "hour": 14,
+            "popularity": 68
+          },
+          {
+            "hour": 15,
+            "popularity": 64
+          },
+          {
+            "hour": 16,
+            "popularity": 44
+          },
+          {
+            "hour": 17,
+            "popularity": 36
+          },
+          {
+            "hour": 18,
+            "popularity": 40
+          },
+          {
+            "hour": 19,
+            "popularity": 48
+          },
+          {
+            "hour": 20,
+            "popularity": 52
+          },
+          {
+            "hour": 21,
+            "popularity": 56
+          },
+          {
+            "hour": 22,
+            "popularity": 52
+          },
+          {
+            "hour": 23,
+            "popularity": 48
+          }
+        ],
+        "2": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 36
+          },
+          {
+            "hour": 11,
+            "popularity": 32
+          },
+          {
+            "hour": 12,
+            "popularity": 28
+          },
+          {
+            "hour": 13,
+            "popularity": 36
+          },
+          {
+            "hour": 14,
+            "popularity": 36
+          },
+          {
+            "hour": 15,
+            "popularity": 36
+          },
+          {
+            "hour": 16,
+            "popularity": 36
+          },
+          {
+            "hour": 17,
+            "popularity": 40
+          },
+          {
+            "hour": 18,
+            "popularity": 48
+          },
+          {
+            "hour": 19,
+            "popularity": 56
+          },
+          {
+            "hour": 20,
+            "popularity": 52
+          },
+          {
+            "hour": 21,
+            "popularity": 48
+          },
+          {
+            "hour": 22,
+            "popularity": 44
+          },
+          {
+            "hour": 23,
+            "popularity": 48
+          }
+        ],
+        "3": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 20
+          },
+          {
+            "hour": 11,
+            "popularity": 24
+          },
+          {
+            "hour": 12,
+            "popularity": 32
+          },
+          {
+            "hour": 13,
+            "popularity": 28
+          },
+          {
+            "hour": 14,
+            "popularity": 32
+          },
+          {
+            "hour": 15,
+            "popularity": 52
+          },
+          {
+            "hour": 16,
+            "popularity": 56
+          },
+          {
+            "hour": 17,
+            "popularity": 44
+          },
+          {
+            "hour": 18,
+            "popularity": 44
+          },
+          {
+            "hour": 19,
+            "popularity": 44
+          },
+          {
+            "hour": 20,
+            "popularity": 48
+          },
+          {
+            "hour": 21,
+            "popularity": 44
+          },
+          {
+            "hour": 22,
+            "popularity": 48
+          },
+          {
+            "hour": 23,
+            "popularity": 44
+          }
+        ],
+        "4": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 36
+          },
+          {
+            "hour": 11,
+            "popularity": 44
+          },
+          {
+            "hour": 12,
+            "popularity": 40
+          },
+          {
+            "hour": 13,
+            "popularity": 28
+          },
+          {
+            "hour": 14,
+            "popularity": 28
+          },
+          {
+            "hour": 15,
+            "popularity": 32
+          },
+          {
+            "hour": 16,
+            "popularity": 20
+          },
+          {
+            "hour": 17,
+            "popularity": 20
+          },
+          {
+            "hour": 18,
+            "popularity": 12
+          },
+          {
+            "hour": 19,
+            "popularity": 24
+          },
+          {
+            "hour": 20,
+            "popularity": 16
+          },
+          {
+            "hour": 21,
+            "popularity": 20
+          },
+          {
+            "hour": 22,
+            "popularity": 24
+          },
+          {
+            "hour": 23,
+            "popularity": 20
+          }
+        ],
+        "5": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 24
+          },
+          {
+            "hour": 11,
+            "popularity": 16
+          },
+          {
+            "hour": 12,
+            "popularity": 20
+          },
+          {
+            "hour": 13,
+            "popularity": 24
+          },
+          {
+            "hour": 14,
+            "popularity": 44
+          },
+          {
+            "hour": 15,
+            "popularity": 56
+          },
+          {
+            "hour": 16,
+            "popularity": 68
+          },
+          {
+            "hour": 17,
+            "popularity": 48
+          },
+          {
+            "hour": 18,
+            "popularity": 60
+          },
+          {
+            "hour": 19,
+            "popularity": 44
+          },
+          {
+            "hour": 20,
+            "popularity": 56
+          },
+          {
+            "hour": 21,
+            "popularity": 60
+          },
+          {
+            "hour": 22,
+            "popularity": 56
+          },
+          {
+            "hour": 23,
+            "popularity": 40
+          },
+          {
+            "hour": 0,
+            "popularity": 40
+          }
+        ],
+        "6": [
+          {
+            "hour": 6,
+            "popularity": 0
+          },
+          {
+            "hour": 7,
+            "popularity": 0
+          },
+          {
+            "hour": 8,
+            "popularity": 0
+          },
+          {
+            "hour": 9,
+            "popularity": 0
+          },
+          {
+            "hour": 10,
+            "popularity": 44
+          },
+          {
+            "hour": 11,
+            "popularity": 60
+          },
+          {
+            "hour": 12,
+            "popularity": 68
+          },
+          {
+            "hour": 13,
+            "popularity": 60
+          },
+          {
+            "hour": 14,
+            "popularity": 60
+          },
+          {
+            "hour": 15,
+            "popularity": 40
+          },
+          {
+            "hour": 16,
+            "popularity": 44
+          },
+          {
+            "hour": 17,
+            "popularity": 28
+          },
+          {
+            "hour": 18,
+            "popularity": 32
+          },
+          {
+            "hour": 19,
+            "popularity": 24
+          },
+          {
+            "hour": 20,
+            "popularity": 28
+          },
+          {
+            "hour": 21,
+            "popularity": 36
+          },
+          {
+            "hour": 22,
+            "popularity": 52
+          },
+          {
+            "hour": 23,
+            "popularity": 48
+          },
+          {
+            "hour": 0,
+            "popularity": 36
+          }
+        ]
+      },
+      "is_closed_now": false
+    }
+  ],
+  "events": [
+    {
+      "place_id": "ChIJ42QeLXu3t4kRnArvcaz2o3A",
+      "place_name": "District Pizza Palace",
+      "current_popularity": 72,
+      "percentage_of_usual": 257,
+      "spike_magnitude": "EXTREME",
+      "data_source": "live",
+      "recorded_at": "2026-05-18T20:09:42.62+00:00",
+      "minutes_ago": 36
+    },
+    {
+      "place_id": "ChIJI6ACK7q2t4kRFcPtFhUuYhU",
+      "place_name": "Domino's Pizza (Pentagon Closest)",
+      "current_popularity": 93,
+      "percentage_of_usual": 211,
+      "spike_magnitude": "EXTREME",
+      "data_source": "live",
+      "recorded_at": "2026-05-18T20:10:35.951+00:00",
+      "minutes_ago": 35
+    }
+  ],
+  "overall_index": 31,
+  "defcon_level": 3,
+  "defcon_details": {
+    "at_time": "2026-05-18T20:00:00.000Z",
+    "defcon_severity_decimal": 0.3086,
+    "raw_index": 39.19,
+    "smoothed_index": 30.86,
+    "open_places": 5,
+    "total_places": 6,
+    "intensity_score": 65.87,
+    "breadth_score": 30,
+    "night_multiplier": 0.9,
+    "persistence_factor": 1,
+    "places_above_150": 2,
+    "places_above_200": 2,
+    "high_count": 2,
+    "extreme_count": 2,
+    "max_pct": 257,
+    "max_current_popularity": 93,
+    "sustained": false,
+    "sentinel": false,
+    "reason": "compute_doughcon_v9: 2 signals, top=District Pizza Palace, high=2, extreme=2"
+  },
+  "active_spikes": 2,
+  "has_active_spikes": true,
+  "timestamp": "2026-05-18T20:46:00.356Z",
+  "method": "serverless",
+  "data_freshness": "fresh"
+}
