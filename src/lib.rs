@@ -1,16 +1,16 @@
 use worker::*;
 
 mod docs;
+mod telemetry;
 mod tools;
-mod uptime;
 mod util;
 
 #[event(fetch)]
 async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
     let method = req.method().to_string();
     let path = req.path();
-    let tool = uptime::tool_from_path(&path);
-    let supabase = uptime::supabase_config(&env);
+    let tool = telemetry::tool_from_path(&path);
+    let sink = telemetry::sink(&env);
     let start = Date::now().as_millis();
     console_log!("→ {} {}", method, path);
 
@@ -47,19 +47,18 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
                 console_log!("← {} {} 404 {}ms (no route)", method, path, ms);
                 return Ok(resp);
             }
-            if let (Some(tool), Some((url, key))) = (tool, supabase) {
+            if let (Some(tool), Some(sink)) = (tool, sink) {
                 let bytes = resp.bytes().await.unwrap_or_default();
                 let headers = resp.headers().clone();
                 let error = if status >= 400 {
                     Some(format!("HTTP {}", status))
                 } else {
-                    uptime::detect_soft_error(&bytes)
+                    telemetry::detect_soft_error(&bytes)
                 };
                 console_log!("← {} {} {} {}ms", method, path, status, ms);
-                ctx.wait_until(uptime::record(
-                    url,
-                    key,
-                    uptime::Outcome {
+                ctx.wait_until(telemetry::record(
+                    sink,
+                    telemetry::Outcome {
                         tool,
                         ms,
                         status,
@@ -74,12 +73,11 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
         }
         Err(e) => {
             console_log!("✗ {} {} {}ms err={}", method, path, ms, e);
-            if let (Some(tool), Some((url, key))) = (tool, supabase) {
-                let msg = uptime::truncate(&e.to_string(), 300);
-                ctx.wait_until(uptime::record(
-                    url,
-                    key,
-                    uptime::Outcome {
+            if let (Some(tool), Some(sink)) = (tool, sink) {
+                let msg = telemetry::truncate(&e.to_string(), 300);
+                ctx.wait_until(telemetry::record(
+                    sink,
+                    telemetry::Outcome {
                         tool,
                         ms,
                         status: 500,

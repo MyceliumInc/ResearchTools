@@ -5,7 +5,7 @@ use std::hash::{Hash, Hasher};
 use std::time::Duration;
 use worker::*;
 
-pub const BOT_UA: &str = "MyceliumBot/1.0";
+pub const BOT_UA: &str = "ResearchToolsBot/1.0";
 
 pub const TIMEOUT_FAST_MS: u64 = 6_000;
 pub const TIMEOUT_DEFAULT_MS: u64 = 10_000;
@@ -18,7 +18,7 @@ fn body_hash(body: &[u8]) -> u64 {
 }
 
 fn cache_key(tool: &str, body: &[u8]) -> String {
-    format!("https://tools-cache.internal/{}?h={:016x}", tool, body_hash(body))
+    format!("https://research-tools-cache.internal/{}?h={:016x}", tool, body_hash(body))
 }
 
 async fn cache_lookup(tool: &str, body: &[u8]) -> Option<Response> {
