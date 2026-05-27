@@ -1,8 +1,4 @@
-<<<<<<< HEAD
   # Tools — implementer notes
-=======
-# Research Tools — implementer notes
->>>>>>> main
 
 Rust Cloudflare Worker exposing public HTTP research endpoints for LLM
 agents. See `README.md` for the HTTP contract and route table.

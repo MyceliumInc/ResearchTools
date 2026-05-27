@@ -189,8 +189,6 @@ fn map_poly(m: &PolyMarket, event_slug: Option<&str>) -> Vec<Item> {
         }];
     }
 
-    // Divide volume equally across outcomes to avoid inflating it N-fold
-    // when each sub-item is shown separately.
     let per_outcome_volume = volume / outcomes.len() as f64;
     outcomes
         .into_iter()
@@ -314,8 +312,6 @@ async fn manifold_search(query: &str, limit: usize) -> Vec<Item> {
     out
 }
 
-// Uses the /v2/markets endpoint which supports server-side search_query,
-// avoiding the need to download all open events and filter client-side.
 #[derive(Deserialize)]
 struct KalshiMarket {
     #[serde(default)]
@@ -326,7 +322,6 @@ struct KalshiMarket {
     yes_sub_title: String,
     #[serde(default)]
     status: String,
-    // last_price is in cents (0–99); maps directly to probability %.
     #[serde(default)]
     last_price: Option<serde_json::Value>,
     #[serde(default)]
@@ -376,7 +371,6 @@ async fn kalshi_search(query: &str, limit: usize) -> Vec<Item> {
             } else {
                 "https://kalshi.com/".to_string()
             };
-            // last_price is cents (0–99), which equals probability % directly.
             let probability_pct = Some(num(&m.last_price).clamp(0.0, 100.0));
             let volume = num(&m.volume);
             Some(Item {
