@@ -52,9 +52,9 @@ fn compute_epsilon(articles: &[Raw], percentile: f32) -> f32 {
             ));
         }
     }
-    distances.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    distances.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
     let idx = ((distances.len() as f32) * percentile).floor() as usize;
-    distances.get(idx).cloned().unwrap_or(1.0)
+    distances.get(idx).cloned().unwrap_or(0.3)
 }
 
 pub async fn run(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
@@ -63,9 +63,12 @@ pub async fn run(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
         .map_err(|_| Error::RustError("missing OPENROUTER_API_KEY".to_string()))?
         .to_string();
     let articles = fetch_articles().await;
+    if articles.is_empty() {
+        return Response::from_json(&ReturnThis { stories: vec![] });
+    }
     let embedded = embed_articles(&articles, &api_key).await?;
     let epsilon = compute_epsilon(&embedded, 0.1);
-    let clusters = cluster(&embedded, 0.15, 2);
+    let clusters = cluster(&embedded, epsilon, 2);
     let stories = pick_representatives(clusters, &embedded);
     let body = ReturnThis { stories };
     Response::from_json(&body)
@@ -74,8 +77,12 @@ pub async fn run(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
 const FEEDS: &[&str] = &[
     "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en",
     "https://feeds.bbci.co.uk/news/rss.xml",
-    "https://feeds.reuters.com/reuters/topNews",
     "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    "https://feeds.npr.org/1001/rss.xml",
+    "https://www.theguardian.com/world/rss",
+    "http://rss.cnn.com/rss/cnn_topstories.rss",
+    "https://feeds.washingtonpost.com/rss/world",
+    "https://www.aljazeera.com/xml/rss/all.xml",
 ];
 
 const SIX_HOURS_MS: u64 = 6 * 60 * 60 * 1000;
@@ -120,19 +127,67 @@ async fn fetch_feed(url: &str) -> Vec<RawData> {
         let headline = extract_tag(&chunk, "title");
         let url = extract_tag(&chunk, "link");
         let description = extract_tag(&chunk, "description");
-        let pub_date = extract_tag(&chunk, "pubDate");
+        let pub_date = extract_tag(&chunk, "pubDate").and_then(|s| parse_pub_date_ms(strip_cdata(s)));
         if let (Some(h), Some(u)) = (headline, url) {
             let raw_data: RawData = RawData {
                 headline: strip_cdata(h).to_string(),
                 url: u.replace("&amp;", "&"),
                 description: description.map(|s| strip_cdata(s).to_string()),
-                pub_date_ms: None,
+                pub_date_ms: pub_date,
             };
             articles.push(raw_data);
         }
     }
 
     articles
+}
+
+fn parse_pub_date_ms(s: &str) -> Option<u64> {
+    let s = s.trim();
+    let s = match s.find(',') {
+        Some(i) => s[i + 1..].trim(),
+        None => s,
+    };
+    let parts: Vec<&str> = s.split_whitespace().collect();
+    if parts.len() < 5 {
+        return None;
+    }
+    let day: i64 = parts[0].parse().ok()?;
+    let month: i64 = match parts[1] {
+        "Jan" => 1, "Feb" => 2, "Mar" => 3, "Apr" => 4,
+        "May" => 5, "Jun" => 6, "Jul" => 7, "Aug" => 8,
+        "Sep" => 9, "Oct" => 10, "Nov" => 11, "Dec" => 12,
+        _ => return None,
+    };
+    let year: i64 = parts[2].parse().ok()?;
+    let time: Vec<&str> = parts[3].split(':').collect();
+    if time.len() < 2 {
+        return None;
+    }
+    let h: i64 = time[0].parse().ok()?;
+    let m: i64 = time[1].parse().ok()?;
+    let sec: i64 = time.get(2).and_then(|s| s.parse().ok()).unwrap_or(0);
+    let tz: i64 = match parts[4] {
+        "GMT" | "UT" | "UTC" | "Z" => 0,
+        z if z.starts_with('+') || z.starts_with('-') => {
+            let sign: i64 = if z.starts_with('-') { -1 } else { 1 };
+            let n: i64 = z[1..].parse().ok()?;
+            sign * ((n / 100) * 3600 + (n % 100) * 60)
+        }
+        _ => 0,
+    };
+    let y = if month <= 2 { year - 1 } else { year };
+    let era = if y >= 0 { y / 400 } else { (y - 399) / 400 };
+    let yoe = y - era * 400;
+    let mp = if month > 2 { month - 3 } else { month + 9 };
+    let doy = (153 * mp + 2) / 5 + day - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    let days = era * 146097 + doe - 719468;
+    let secs = days * 86400 + h * 3600 + m * 60 + sec - tz;
+    if secs < 0 {
+        return None;
+    }
+    Some((secs as u64) * 1000)
 }
 
 async fn embed_articles(articles: &[RawData], api_key: &str) -> Result<Vec<Raw>> {
