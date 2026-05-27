@@ -3,3 +3,5 @@
 node_modules
 .wrangler
 Cargo.lock
+package-lock.json
+bun.lock

@@ -1,27 +1,33 @@
+<<<<<<< HEAD
   # Tools — implementer notes
+=======
+# Research Tools — implementer notes
+>>>>>>> main
 
-Rust Cloudflare Worker at `tools.mycelium.markets`. See `README.md` for the
-HTTP contract and route table.
+Rust Cloudflare Worker exposing public HTTP research endpoints for LLM
+agents. See `README.md` for the HTTP contract and route table.
 
 ## Layout
 
 ```
 src/
-  lib.rs            # worker entry + router + uptime wrapper
+  lib.rs            # worker entry + router + telemetry wrapper
   util.rs           # fetch w/ AbortController timeout + shared helpers
-  uptime.rs         # detect_soft_error + record() → public.uptime_record
+  telemetry.rs      # detect_soft_error + record() → optional webhook
+  docs.rs           # /docs HTML
   tools/
-    search_web.rs           # DuckDuckGo Lite SERP scrape
+    search_web.rs           # Exa Search API w/ DuckDuckGo Lite fallback
     search_news.rs          # Google News RSS
     fetch_url.rs            # Jina Reader + raw HTML fallback
     encyclopedia.rs         # Wikipedia + Grokipedia (parallel merge)
     prediction_markets.rs   # Polymarket + Manifold + Kalshi (parallel merge)
+    pentagon_pizza.rs       # pentagon pizza index
 ```
 
 Routes are wired in `src/lib.rs`'s `Router` block. Every `/v1/*` POST handler
 returns `Result<Response>`; the wrapper in `fetch()` reads the response body,
-sniffs for soft `{error}` payloads, and `ctx.wait_until`s a post to
-`public.uptime_record` so the caller never waits.
+sniffs for soft `{error}` payloads, and `ctx.wait_until`s a POST to the
+configured telemetry webhook so the caller never waits.
 
 ## Conventions
 
@@ -38,29 +44,20 @@ sniffs for soft `{error}` payloads, and `ctx.wait_until`s a post to
   Use byte-pattern matching + `quick-xml` instead. Current deps: `worker`,
   `serde`, `serde_json`, `quick-xml`, `urlencoding`, `futures`, `once_cell`.
 - **`nodejs_compat` is NOT required** — pure-Rust WASM worker.
-- **Structured JSON, not preformatted strings.** Site-side wrappers do the
-  LangChain `formatX` step; external callers render however they like.
+- **Structured JSON, not preformatted strings.** Callers render however
+  they like.
 
-## Uptime self-reporting
+## Telemetry self-reporting
 
 `src/lib.rs` `fetch()` records `(tool, ms, status, error)` after the response
 goes out. `tool_from_path` extracts the slug after `/v1/`. Soft errors are
-detected by JSON-parsing the body for an `error` field. `SUPABASE_URL` and
-`SUPABASE_PUBLISHABLE_KEY` are bound as `[vars]` in `wrangler.toml` — the
-publishable key is the same one Site ships in its browser bundle, so it's
-not a secret. 404s skip recording. Records reflect real agent traffic; idle
-tools render as "no traffic in <window>" at Site `/admin/health`.
+detected by JSON-parsing the body for an `error` field. The recorder is
+opt-in: if `TELEMETRY_URL` is unset, no record is sent. `TELEMETRY_AUTH`
+(optional) is sent as both `Authorization: Bearer <value>` and `apikey:
+<value>` headers. 404s skip recording.
 
 ## Adding a tool
 
 1. New file `src/tools/<name>.rs` exporting `pub async fn run(req: Request) -> Result<Response>`.
 2. Add `pub mod <name>;` to `src/tools/mod.rs`.
 3. Add a `.post_async("/v1/<name>", …)` line to the router in `src/lib.rs`.
-4. **Run the root `edit-tools` skill** (`/Users/benny/Code/Mycelium/.claude/skills/edit-tools`)
-   for the cross-repo checklist — Site wrapper in `Site/lib/agents/tools/`,
-   research-tools-skill description, and any MCP/Spore plumbing.
-
-## Not in scope
-
-`search_markets` stays on Site — it hits Supabase via the service-role
-client and depends on per-request auth context. Do not move it here.

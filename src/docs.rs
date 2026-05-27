@@ -12,7 +12,7 @@ const HTML: &str = r##"<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mycelium Tools — API spec</title>
+<title>Research Tools — API spec</title>
 <style>
   :root {
     --bg: #fafaf7;
@@ -66,8 +66,8 @@ const HTML: &str = r##"<!doctype html>
 <body>
 
 <header>
-  <h1>Mycelium Tools</h1>
-  <p class="sub">Public HTTP research tools for AI agents trading on <a href="https://mycelium.markets">mycelium.markets</a>. No auth, structured JSON in and out.</p>
+  <h1>Research Tools</h1>
+  <p class="sub">Public HTTP research endpoints for LLM agents. No auth, structured JSON in and out.</p>
   <p class="nav">
     <a href="#search_web">search_web</a>
     <a href="#search_news">search_news</a>
@@ -78,8 +78,7 @@ const HTML: &str = r##"<!doctype html>
 </header>
 
 <h2>Overview</h2>
-<p>Base URL: <code>https://tools.mycelium.markets</code></p>
-<p>Every endpoint is <code>POST application/json</code> and returns <code>application/json</code>. There is no authentication &mdash; the service is public and only scrapes/queries public sources. Used in production by the Mycelium first-party agents (Creator, Pricer, Spore) and open to any external caller.</p>
+<p>Every endpoint is <code>POST application/json</code> and returns <code>application/json</code>. There is no authentication &mdash; the service is public and only scrapes/queries public sources. Open to any caller.</p>
 
 <h3>Health</h3>
 <pre><code>GET /        &rarr; "ok"
@@ -102,7 +101,7 @@ GET /docs    &rarr; this page</code></pre>
 </table>
 
 <h2 id="search_web"><span class="method">POST</span><span class="endpoint">/v1/search_web</span></h2>
-<p>Web search via Brave Search API. Returns a flat list of organic results.</p>
+<p>Web search. Uses the <a href="https://exa.ai">Exa Search API</a> if <code>EXA_API_KEY</code> is configured on the worker; otherwise scrapes DuckDuckGo Lite. Returns a flat list of organic results regardless of backend.</p>
 
 <h3>Request</h3>
 <pre><code>{
@@ -122,7 +121,7 @@ GET /docs    &rarr; this page</code></pre>
 }</code></pre>
 
 <h3>curl</h3>
-<pre><code>curl -s https://tools.mycelium.markets/v1/search_web \
+<pre><code>curl -s $BASE/v1/search_web \
   -H 'content-type: application/json' \
   -d '{"query":"OpenAI o1 release date","limit":5}'</code></pre>
 
@@ -147,7 +146,7 @@ GET /docs    &rarr; this page</code></pre>
 }</code></pre>
 
 <h3>curl</h3>
-<pre><code>curl -s https://tools.mycelium.markets/v1/search_news \
+<pre><code>curl -s $BASE/v1/search_news \
   -H 'content-type: application/json' \
   -d '{"query":"Federal Reserve rate decision","limit":10}'</code></pre>
 
@@ -170,7 +169,7 @@ GET /docs    &rarr; this page</code></pre>
 <p><code>source</code> is <code>"jina"</code> or <code>"raw"</code>.</p>
 
 <h3>curl</h3>
-<pre><code>curl -s https://tools.mycelium.markets/v1/fetch_url \
+<pre><code>curl -s $BASE/v1/fetch_url \
   -H 'content-type: application/json' \
   -d '{"url":"https://example.com/article","max_chars":2000}'</code></pre>
 
@@ -203,7 +202,7 @@ GET /docs    &rarr; this page</code></pre>
 <p><code>source</code> is <code>"wikipedia"</code> or <code>"grokipedia"</code>.</p>
 
 <h3>curl</h3>
-<pre><code>curl -s https://tools.mycelium.markets/v1/encyclopedia_search \
+<pre><code>curl -s $BASE/v1/encyclopedia_search \
   -H 'content-type: application/json' \
   -d '{"query":"LMSR market maker","limit":5}'</code></pre>
 
@@ -232,22 +231,20 @@ GET /docs    &rarr; this page</code></pre>
 <p><code>source</code> is <code>"polymarket"</code>, <code>"manifold"</code>, or <code>"kalshi"</code>. <code>probability_pct</code> may be <code>null</code> when the upstream market hasn't priced. <code>volume</code> is in the upstream venue's native units (typically USD).</p>
 
 <h3>curl</h3>
-<pre><code>curl -s https://tools.mycelium.markets/v1/prediction_market_search \
+<pre><code>curl -s $BASE/v1/prediction_market_search \
   -H 'content-type: application/json' \
   -d '{"query":"2028 US presidential election","limit":8}'</code></pre>
 
 <h2>Operational notes</h2>
 <ul>
-  <li><strong>Uptime self-reporting.</strong> Each <code>/v1/*</code> handler posts <code>(tool, ms, status, error)</code> back to Supabase via <code>ctx.waitUntil</code> after responding &mdash; no caller-visible latency. Mycelium admins see live latency at <code>/admin/health</code>.</li>
+  <li><strong>Telemetry.</strong> If <code>TELEMETRY_URL</code> is configured, each <code>/v1/*</code> handler POSTs <code>{tool, ms, status, error}</code> to that URL via <code>ctx.waitUntil</code> after responding &mdash; no caller-visible latency. Opt-in; unset by default.</li>
   <li><strong>Caching.</strong> <code>search_web</code> and <code>prediction_market_search</code> have short edge caches (5 min and 1 min respectively). The other endpoints fetch fresh on each call.</li>
-  <li><strong>Rate limits.</strong> None enforced today. Be reasonable; if the service is abused we'll add token-bucket per-IP.</li>
-  <li><strong>Stability.</strong> v1 routes and JSON shapes won't break. New fields may be added; new fields will always be additive.</li>
+  <li><strong>Rate limits.</strong> None enforced today. Be reasonable.</li>
+  <li><strong>Stability.</strong> v1 routes and JSON shapes won't break. New fields will always be additive.</li>
 </ul>
 
 <footer>
-  Source: <a href="https://github.com/mycelium-markets/mycelium">github.com/mycelium-markets/mycelium</a> &middot;
-  Worker: Rust + WASM on Cloudflare &middot;
-  Issues: ping <a href="https://mycelium.markets">mycelium.markets</a>
+  Worker: Rust + WASM on Cloudflare
 </footer>
 
 </body>
