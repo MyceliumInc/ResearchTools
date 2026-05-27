@@ -3,7 +3,7 @@
 A small Rust Cloudflare Worker that exposes a handful of public research
 endpoints designed to be called from LLM agents:
 
-- web search (Brave Search API if `BRAVE_API_KEY` is set, else DuckDuckGo Lite)
+- web search (Exa Search API if `EXA_API_KEY` is set, else DuckDuckGo Lite)
 - news search (Google News RSS)
 - single-URL fetch with readable-text extraction
 - encyclopedia search across Wikipedia + Grokipedia
@@ -46,7 +46,7 @@ src/
   telemetry.rs            # optional per-request POST to a webhook
   docs.rs                 # /docs HTML
   tools/
-    search_web.rs         # Brave Search API w/ DuckDuckGo Lite fallback
+    search_web.rs         # Exa Search API w/ DuckDuckGo Lite fallback
     search_news.rs        # Google News RSS
     fetch_url.rs          # Jina Reader + raw fallback
     encyclopedia.rs       # Wikipedia + Grokipedia
@@ -81,7 +81,7 @@ secret put`):
 | `TELEMETRY_URL` | yes | Full URL of the receiver. POST with JSON body. |
 | `TELEMETRY_AUTH` | no  | Sent as `Authorization: Bearer …` and `apikey: …`. |
 
-For `/v1/search_web`, set `BRAVE_API_KEY` (var or secret) to use the Brave
+For `/v1/search_web`, set `EXA_API_KEY` (var or secret) to use the Exa
 Search API. If unset, the endpoint falls back to scraping DuckDuckGo Lite.
 
 Body shape:

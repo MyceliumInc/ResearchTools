@@ -101,7 +101,7 @@ GET /docs    &rarr; this page</code></pre>
 </table>
 
 <h2 id="search_web"><span class="method">POST</span><span class="endpoint">/v1/search_web</span></h2>
-<p>Web search. Uses the <a href="https://brave.com/search/api/">Brave Search API</a> if <code>BRAVE_API_KEY</code> is configured on the worker; otherwise scrapes DuckDuckGo Lite. Returns a flat list of organic results regardless of backend.</p>
+<p>Web search. Uses the <a href="https://exa.ai">Exa Search API</a> if <code>EXA_API_KEY</code> is configured on the worker; otherwise scrapes DuckDuckGo Lite. Returns a flat list of organic results regardless of backend.</p>
 
 <h3>Request</h3>
 <pre><code>{

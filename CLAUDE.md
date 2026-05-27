@@ -12,7 +12,7 @@ src/
   telemetry.rs      # detect_soft_error + record() → optional webhook
   docs.rs           # /docs HTML
   tools/
-    search_web.rs           # Brave Search API w/ DuckDuckGo Lite fallback
+    search_web.rs           # Exa Search API w/ DuckDuckGo Lite fallback
     search_news.rs          # Google News RSS
     fetch_url.rs            # Jina Reader + raw HTML fallback
     encyclopedia.rs         # Wikipedia + Grokipedia (parallel merge)

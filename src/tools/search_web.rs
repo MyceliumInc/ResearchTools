@@ -1,5 +1,5 @@
 use crate::util::{
-    cache_or, get_text, send_request_timed, strip_tags, BOT_UA, TIMEOUT_DEFAULT_MS,
+    cache_or, send_request_timed, strip_tags, BOT_UA, TIMEOUT_DEFAULT_MS,
 };
 use serde::{Deserialize, Serialize};
 use worker::*;
@@ -24,15 +24,15 @@ struct Resp {
 }
 
 pub async fn run(req: Request, ctx: RouteContext<()>) -> Result<Response> {
-    let brave = ctx
-        .secret("BRAVE_API_KEY")
+    let exa = ctx
+        .secret("EXA_API_KEY")
         .ok()
         .map(|s| s.to_string())
         .filter(|s| !s.is_empty());
-    cache_or(req, "search_web", 300, move |body| execute(body, brave)).await
+    cache_or(req, "search_web", 300, move |body| execute(body, exa)).await
 }
 
-async fn execute(raw: Vec<u8>, brave: Option<String>) -> Result<Vec<u8>> {
+async fn execute(raw: Vec<u8>, exa: Option<String>) -> Result<Vec<u8>> {
     let body: Req = serde_json::from_slice(&raw)
         .map_err(|e| Error::RustError(format!("bad request: {}", e)))?;
     let query = body.query.trim();
@@ -41,38 +41,54 @@ async fn execute(raw: Vec<u8>, brave: Option<String>) -> Result<Vec<u8>> {
     }
     let limit = body.limit.unwrap_or(8).clamp(1, 20);
 
-    let results = match brave {
-        Some(key) => search_brave(query, limit, &key).await?,
+    let results = match exa {
+        Some(key) => search_exa(query, limit, &key).await?,
         None => search_ddg(query, limit).await?,
     };
 
     Ok(serde_json::to_vec(&Resp { results })?)
 }
 
-async fn search_brave(query: &str, limit: usize, key: &str) -> Result<Vec<WebResult>> {
-    let url = format!(
-        "https://api.search.brave.com/res/v1/web/search?q={}&count={}&text_decorations=false&safesearch=moderate&country=US",
-        urlencoding::encode(query),
-        limit,
-    );
+async fn search_exa(query: &str, limit: usize, key: &str) -> Result<Vec<WebResult>> {
+    let payload = serde_json::json!({
+        "query": query,
+        "type": "auto",
+        "numResults": limit,
+        "contents": { "highlights": true },
+    });
 
-    let text = get_text(
-        &url,
-        BOT_UA,
-        &[
-            ("Accept", "application/json"),
-            ("X-Subscription-Token", key),
-        ],
-        TIMEOUT_DEFAULT_MS,
-    )
-    .await
-    .map_err(|e| Error::RustError(format!("Search failed: {}", e)))?;
+    let headers = Headers::new();
+    headers.set("User-Agent", BOT_UA)?;
+    headers.set("Accept", "application/json")?;
+    headers.set("Content-Type", "application/json")?;
+    headers.set("x-api-key", key)?;
+
+    let mut init = RequestInit::new();
+    init.with_method(Method::Post)
+        .with_headers(headers)
+        .with_body(Some(payload.to_string().into()));
+
+    let request = Request::new_with_init("https://api.exa.ai/search", &init)
+        .map_err(|e| Error::RustError(format!("Search failed: {}", e)))?;
+    let mut resp = send_request_timed(request, TIMEOUT_DEFAULT_MS)
+        .await
+        .map_err(|e| Error::RustError(format!("Search failed: {}", e)))?;
+    if resp.status_code() >= 400 {
+        return Err(Error::RustError(format!(
+            "Search failed: HTTP {}",
+            resp.status_code()
+        )));
+    }
+    let text = resp
+        .text()
+        .await
+        .map_err(|e| Error::RustError(format!("Search failed: {}", e)))?;
 
     let json: serde_json::Value = serde_json::from_str(&text)
         .map_err(|e| Error::RustError(format!("Search failed: bad json: {}", e)))?;
 
     let mut results: Vec<WebResult> = Vec::new();
-    if let Some(arr) = json.pointer("/web/results").and_then(|v| v.as_array()) {
+    if let Some(arr) = json.get("results").and_then(|v| v.as_array()) {
         for item in arr.iter().take(limit) {
             let title = item
                 .get("title")
@@ -85,9 +101,22 @@ async fn search_brave(query: &str, limit: usize, key: &str) -> Result<Vec<WebRes
                 .unwrap_or_default()
                 .to_string();
             let snippet = item
-                .get("description")
-                .and_then(|v| v.as_str())
-                .map(strip_tags)
+                .get("highlights")
+                .and_then(|v| v.as_array())
+                .map(|hs| {
+                    hs.iter()
+                        .filter_map(|h| h.as_str())
+                        .map(strip_tags)
+                        .filter(|s| !s.is_empty())
+                        .collect::<Vec<_>>()
+                        .join(" … ")
+                })
+                .filter(|s| !s.is_empty())
+                .or_else(|| {
+                    item.get("summary")
+                        .and_then(|v| v.as_str())
+                        .map(strip_tags)
+                })
                 .unwrap_or_default();
             if title.is_empty() || url.is_empty() {
                 continue;
