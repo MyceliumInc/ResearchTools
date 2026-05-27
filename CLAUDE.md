@@ -1,4 +1,4 @@
-# Tools — implementer notes
+  # Tools — implementer notes
 
 Rust Cloudflare Worker at `tools.mycelium.markets`. See `README.md` for the
 HTTP contract and route table.
