@@ -65,12 +65,6 @@ pub async fn run(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
     let articles = fetch_articles().await;
     let embedded = embed_articles(&articles, &api_key).await?;
     let epsilon = compute_epsilon(&embedded, 0.1);
-    console_log!("computed epsilon: {}", epsilon);
-    let biden_count = articles
-        .iter()
-        .filter(|a| a.headline.to_lowercase().contains("biden"))
-        .count();
-    console_log!("biden articles: {}", biden_count);
     let clusters = cluster(&embedded, 0.15, 2);
     let stories = pick_representatives(clusters, &embedded);
     let body = ReturnThis { stories };
