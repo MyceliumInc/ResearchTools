@@ -315,7 +315,7 @@ async fn manifold_search(query: &str, limit: usize) -> Vec<Item> {
 #[derive(Deserialize)]
 struct KalshiMarket {
     #[serde(default)]
-    event_ticker: String,
+    ticker: String,
     #[serde(default)]
     title: String,
     #[serde(default)]
@@ -323,64 +323,99 @@ struct KalshiMarket {
     #[serde(default)]
     status: String,
     #[serde(default)]
-    last_price: Option<serde_json::Value>,
+    last_price_dollars: String,
     #[serde(default)]
-    volume: Option<serde_json::Value>,
+    volume_fp: String,
     #[serde(default)]
     close_time: Option<String>,
 }
 
 #[derive(Deserialize)]
-struct KalshiResp {
+struct KalshiEvent {
+    #[serde(default)]
+    event_ticker: String,
+    #[serde(default)]
+    series_ticker: String,
+    #[serde(default)]
+    title: String,
+    #[serde(default)]
+    sub_title: String,
+    #[serde(default)]
+    mutually_exclusive: bool,
     #[serde(default)]
     markets: Vec<KalshiMarket>,
 }
 
+#[derive(Deserialize)]
+struct KalshiResp {
+    #[serde(default)]
+    events: Vec<KalshiEvent>,
+}
+
 async fn kalshi_search(query: &str, limit: usize) -> Vec<Item> {
-    let url = format!(
-        "https://api.elections.kalshi.com/trade-api/v2/markets?status=open&search_query={}&limit={}",
-        urlencoding::encode(query),
-        limit,
-    );
-    let json = match get_json(&url, BOT_UA, TIMEOUT_DEFAULT_MS).await {
+    let url = "https://api.elections.kalshi.com/trade-api/v2/events?status=open&with_nested_markets=true&limit=200";
+    let json = match get_json(url, BOT_UA, TIMEOUT_DEFAULT_MS).await {
         Ok(v) => v,
         Err(e) => {
             console_log!("kalshi_search failed: {}", e);
             return vec![];
         }
     };
-    let parsed: KalshiResp =
-        serde_json::from_value(json).unwrap_or(KalshiResp { markets: vec![] });
-    parsed
-        .markets
-        .into_iter()
-        .filter_map(|m| {
-            if m.status != "open" {
-                return None;
+    let parsed: KalshiResp = serde_json::from_value(json).unwrap_or(KalshiResp { events: vec![] });
+    let q = query.to_lowercase();
+    let mut out = Vec::new();
+    'outer: for ev in &parsed.events {
+        let event_match = ev.title.to_lowercase().contains(&q)
+            || ev.sub_title.to_lowercase().contains(&q)
+            || ev.event_ticker.to_lowercase().contains(&q)
+            || ev.series_ticker.to_lowercase().contains(&q);
+        for m in &ev.markets {
+            if m.status != "active" {
+                continue;
             }
-            let question = if !m.yes_sub_title.is_empty() {
-                format!("{} — {}", m.title.trim(), m.yes_sub_title.trim())
-            } else {
+            let market_match = m.title.to_lowercase().contains(&q)
+                || m.yes_sub_title.to_lowercase().contains(&q)
+                || m.ticker.to_lowercase().contains(&q);
+            if !event_match && !market_match {
+                continue;
+            }
+            let question = if ev.mutually_exclusive && !m.yes_sub_title.is_empty() {
+                format!("{} — {}", ev.title.trim(), m.yes_sub_title.trim())
+            } else if !m.title.is_empty() {
                 m.title.trim().to_string()
+            } else {
+                ev.title.trim().to_string()
             };
             if question.is_empty() {
-                return None;
+                continue;
             }
-            let url = if !m.event_ticker.is_empty() {
-                format!("https://kalshi.com/markets/{}", m.event_ticker)
+            let url = if !ev.series_ticker.is_empty() && !ev.event_ticker.is_empty() {
+                format!(
+                    "https://kalshi.com/markets/{}/{}",
+                    ev.series_ticker, ev.event_ticker
+                )
             } else {
                 "https://kalshi.com/".to_string()
             };
-            let probability_pct = Some(num(&m.last_price).clamp(0.0, 100.0));
-            let volume = num(&m.volume);
-            Some(Item {
+            let last_price: f64 = m.last_price_dollars.parse().unwrap_or(0.0);
+            let probability_pct = if last_price > 0.0 {
+                Some((last_price * 100.0).clamp(0.0, 100.0))
+            } else {
+                None
+            };
+            let volume: f64 = m.volume_fp.parse().unwrap_or(0.0);
+            out.push(Item {
                 source: "kalshi".to_string(),
                 question,
                 url,
                 probability_pct,
-                end_date: m.close_time,
+                end_date: m.close_time.clone(),
                 volume,
-            })
-        })
-        .collect()
+            });
+            if out.len() >= limit {
+                break 'outer;
+            }
+        }
+    }
+    out
 }
