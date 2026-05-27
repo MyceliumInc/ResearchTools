@@ -74,6 +74,7 @@ const HTML: &str = r##"<!doctype html>
     <a href="#fetch_url">fetch_url</a>
     <a href="#encyclopedia_search">encyclopedia_search</a>
     <a href="#prediction_market_search">prediction_market_search</a>
+    <a href="#breaking_news">breaking_news</a>
   </p>
 </header>
 
@@ -97,6 +98,7 @@ GET /docs    &rarr; this page</code></pre>
     <tr><td><code>/v1/fetch_url</code></td><td>3500 chars</td><td>50000</td></tr>
     <tr><td><code>/v1/encyclopedia_search</code></td><td>5</td><td>25</td></tr>
     <tr><td><code>/v1/prediction_market_search</code></td><td>8</td><td>50</td></tr>
+    <tr><td><code>/v1/breaking_news</code></td><td>up to 20 stories</td><td>—</td></tr>
   </tbody>
 </table>
 
@@ -235,10 +237,35 @@ GET /docs    &rarr; this page</code></pre>
   -H 'content-type: application/json' \
   -d '{"query":"2028 US presidential election","limit":8}'</code></pre>
 
+<h2 id="breaking_news"><span class="method">POST</span><span class="endpoint">/v1/breaking_news</span></h2>
+<p>Surfaces stories the wire is covering <em>right now</em>. Pulls headlines from a handful of major outlets (BBC, NYT, Guardian, NPR, CNN, Al Jazeera, Sky News), groups near-duplicates via entity-blocked Jaccard clustering on stemmed tokens, and returns one representative per cluster. No embedding model, no LLM &mdash; pure token math, sub-second cold latency. Responses are edge-cached for 30 seconds.</p>
+<p>A story only appears if it&apos;s covered by at least <strong>2 distinct outlets</strong> within the last 12 hours. Sorted by source coverage (most-covered first).</p>
+
+<h3>Request</h3>
+<pre><code>{}</code></pre>
+
+<h3>Response</h3>
+<pre><code>{
+  "stories": [
+    {
+      "headline": "Five people stuck in flooded cave in Laos for week found alive",
+      "url":      "https://news.sky.com/story/...",
+      "source":   "SkyNews",
+      "sources":  4
+    }
+  ]
+}</code></pre>
+<p><code>source</code> is the outlet that supplied the representative headline (earliest scoop, non-live-blog URL preferred). <code>sources</code> is the count of distinct outlets covering this story.</p>
+
+<h3>curl</h3>
+<pre><code>curl -s $BASE/v1/breaking_news \
+  -H 'content-type: application/json' \
+  -d '{}'</code></pre>
+
 <h2>Operational notes</h2>
 <ul>
   <li><strong>Telemetry.</strong> If <code>TELEMETRY_URL</code> is configured, each <code>/v1/*</code> handler POSTs <code>{tool, ms, status, error}</code> to that URL via <code>ctx.waitUntil</code> after responding &mdash; no caller-visible latency. Opt-in; unset by default.</li>
-  <li><strong>Caching.</strong> <code>search_web</code> and <code>prediction_market_search</code> have short edge caches (5 min and 1 min respectively). The other endpoints fetch fresh on each call.</li>
+  <li><strong>Caching.</strong> <code>search_web</code> and <code>prediction_market_search</code> have short edge caches (5 min and 1 min respectively). <code>breaking_news</code> is cached for 30 seconds. The other endpoints fetch fresh on each call.</li>
   <li><strong>Rate limits.</strong> None enforced today. Be reasonable.</li>
   <li><strong>Stability.</strong> v1 routes and JSON shapes won't break. New fields will always be additive.</li>
 </ul>

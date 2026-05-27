@@ -18,6 +18,7 @@ src/
     encyclopedia.rs         # Wikipedia + Grokipedia (parallel merge)
     prediction_markets.rs   # Polymarket + Manifold + Kalshi (parallel merge)
     pentagon_pizza.rs       # pentagon pizza index
+    breaking_news.rs        # multi-feed RSS → entity-blocked Jaccard cluster
 ```
 
 Routes are wired in `src/lib.rs`'s `Router` block. Every `/v1/*` POST handler

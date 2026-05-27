@@ -5,6 +5,7 @@ endpoints designed to be called from LLM agents:
 
 - web search (Exa Search API if `EXA_API_KEY` is set, else DuckDuckGo Lite)
 - news search (Google News RSS)
+- breaking news (cross-outlet RSS dedup + cluster, no embedding model)
 - single-URL fetch with readable-text extraction
 - encyclopedia search across Wikipedia + Grokipedia
 - prediction-market search across Polymarket + Manifold + Kalshi
@@ -25,6 +26,7 @@ All endpoints are `POST application/json` and return `application/json`.
 | `POST /v1/fetch_url` | `{url, max_chars?}` | `{text, source: "jina" \| "raw"}` |
 | `POST /v1/encyclopedia_search` | `{query, limit?}` | `{results: [{source, title, snippet, url}]}` |
 | `POST /v1/prediction_market_search` | `{query, limit?}` | `{results: [{source, question, url, probability_pct, end_date, volume}]}` |
+| `POST /v1/breaking_news` | `{}` | `{stories: [{headline, url, source, sources}]}` |
 | `POST /v1/pentagon_pizza` | `{}` | `{...}` |
 | `GET /` | — | `ok` |
 | `GET /docs` | — | rendered API spec |
@@ -52,6 +54,7 @@ src/
     encyclopedia.rs       # Wikipedia + Grokipedia
     prediction_markets.rs # Polymarket + Manifold + Kalshi
     pentagon_pizza.rs     # pentagon pizza index
+    breaking_news.rs      # multi-feed RSS, entity-blocked Jaccard clustering
 ```
 
 ## Build & deploy
