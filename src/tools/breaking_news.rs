@@ -63,12 +63,21 @@ pub async fn run(_req: Request, ctx: RouteContext<()>) -> Result<Response> {
         .map_err(|_| Error::RustError("missing OPENROUTER_API_KEY".to_string()))?
         .to_string();
     let articles = fetch_articles().await;
+    console_log!("breaking_news: {} articles after dedup+cutoff", articles.len());
     if articles.is_empty() {
         return Response::from_json(&ReturnThis { stories: vec![] });
     }
     let embedded = embed_articles(&articles, &api_key).await?;
+    console_log!("breaking_news: {} headlines embedded", embedded.len());
     let epsilon = compute_epsilon(&embedded, 0.1);
     let clusters = cluster(&embedded, epsilon, 2);
+    let cluster_sizes: Vec<usize> = clusters.iter().map(|c| c.len()).collect();
+    console_log!(
+        "breaking_news: epsilon={:.4} clusters={} sizes={:?}",
+        epsilon,
+        clusters.len(),
+        cluster_sizes
+    );
     let stories = pick_representatives(clusters, &embedded);
     let body = ReturnThis { stories };
     Response::from_json(&body)
@@ -101,24 +110,40 @@ async fn fetch_articles() -> Vec<RawData> {
 
     let mut seen_urls = std::collections::HashSet::new();
     let mut articles = Vec::new();
+    let mut dropped_old = 0usize;
+    let mut dropped_dup = 0usize;
 
     for feed_articles in results {
         for article in feed_articles {
-            if article.pub_date_ms.unwrap_or(cutoff) >= cutoff
-                && seen_urls.insert(article.url.clone())
-            {
-                articles.push(article);
+            if article.pub_date_ms.unwrap_or(cutoff) < cutoff {
+                dropped_old += 1;
+                continue;
             }
+            if !seen_urls.insert(article.url.clone()) {
+                dropped_dup += 1;
+                continue;
+            }
+            articles.push(article);
         }
     }
 
+    console_log!(
+        "breaking_news: cutoff={} kept={} dropped_old={} dropped_dup={}",
+        cutoff,
+        articles.len(),
+        dropped_old,
+        dropped_dup
+    );
     articles
 }
 
 async fn fetch_feed(url: &str) -> Vec<RawData> {
     let text = match get_text(url, BOT_UA, &[], TIMEOUT_DEFAULT_MS).await {
         Ok(t) => t,
-        Err(_) => return vec![],
+        Err(e) => {
+            console_log!("breaking_news: feed {} fetch failed: {:?}", url, e);
+            return vec![];
+        }
     };
 
     let mut articles = Vec::new();
@@ -139,6 +164,13 @@ async fn fetch_feed(url: &str) -> Vec<RawData> {
         }
     }
 
+    let with_date = articles.iter().filter(|a| a.pub_date_ms.is_some()).count();
+    console_log!(
+        "breaking_news: feed {} parsed {} items ({} with pubDate)",
+        url,
+        articles.len(),
+        with_date
+    );
     articles
 }
 
