@@ -6,10 +6,10 @@ const TIMEOUT_MS: u64 = 4_000;
 
 #[derive(Serialize)]
 struct Payload<'a> {
-    p_tool: &'a str,
-    p_ms: i32,
-    p_status: i32,
-    p_error: &'a str,
+    tool: &'a str,
+    ms: i32,
+    status: i32,
+    error: &'a str,
 }
 
 pub struct Outcome {
@@ -19,13 +19,22 @@ pub struct Outcome {
     pub error: Option<String>,
 }
 
-pub fn supabase_config(env: &Env) -> Option<(String, String)> {
-    let url = env.var("SUPABASE_URL").ok()?.to_string();
-    let key = env.var("SUPABASE_PUBLISHABLE_KEY").ok()?.to_string();
-    if url.is_empty() || key.is_empty() {
+pub struct Sink {
+    pub url: String,
+    pub auth: Option<String>,
+}
+
+pub fn sink(env: &Env) -> Option<Sink> {
+    let url = env.var("TELEMETRY_URL").ok()?.to_string();
+    if url.is_empty() {
         return None;
     }
-    Some((url, key))
+    let auth = env
+        .var("TELEMETRY_AUTH")
+        .ok()
+        .map(|v| v.to_string())
+        .filter(|s| !s.is_empty());
+    Some(Sink { url, auth })
 }
 
 pub fn detect_soft_error(bytes: &[u8]) -> Option<String> {
@@ -51,30 +60,28 @@ pub fn tool_from_path(path: &str) -> Option<String> {
     }
 }
 
-pub async fn record(url: String, key: String, outcome: Outcome) {
+pub async fn record(sink: Sink, outcome: Outcome) {
     let body = match serde_json::to_string(&Payload {
-        p_tool: &outcome.tool,
-        p_ms: outcome.ms as i32,
-        p_status: outcome.status as i32,
-        p_error: outcome.error.as_deref().unwrap_or(""),
+        tool: &outcome.tool,
+        ms: outcome.ms as i32,
+        status: outcome.status as i32,
+        error: outcome.error.as_deref().unwrap_or(""),
     }) {
         Ok(s) => s,
         Err(e) => {
-            console_log!("[uptime] payload encode failed: {}", e);
+            console_log!("[telemetry] payload encode failed: {}", e);
             return;
         }
     };
 
-    let endpoint = format!("{}/rest/v1/rpc/uptime_record", url.trim_end_matches('/'));
     let headers = Headers::new();
-    if headers.set("Content-Type", "application/json").is_err()
-        || headers.set("apikey", &key).is_err()
-        || headers
-            .set("Authorization", &format!("Bearer {}", key))
-            .is_err()
-    {
-        console_log!("[uptime] header build failed");
+    if headers.set("Content-Type", "application/json").is_err() {
+        console_log!("[telemetry] header build failed");
         return;
+    }
+    if let Some(auth) = &sink.auth {
+        let _ = headers.set("Authorization", &format!("Bearer {}", auth));
+        let _ = headers.set("apikey", auth);
     }
 
     let mut init = RequestInit::new();
@@ -82,10 +89,10 @@ pub async fn record(url: String, key: String, outcome: Outcome) {
         .with_headers(headers)
         .with_body(Some(wasm_bindgen::JsValue::from_str(&body)));
 
-    let request = match Request::new_with_init(&endpoint, &init) {
+    let request = match Request::new_with_init(&sink.url, &init) {
         Ok(r) => r,
         Err(e) => {
-            console_log!("[uptime] request build failed: {}", e);
+            console_log!("[telemetry] request build failed: {}", e);
             return;
         }
     };
@@ -96,7 +103,7 @@ pub async fn record(url: String, key: String, outcome: Outcome) {
             if status >= 300 {
                 let detail = resp.text().await.unwrap_or_default();
                 console_log!(
-                    "[uptime] record {} returned {} body={}",
+                    "[telemetry] record {} returned {} body={}",
                     outcome.tool,
                     status,
                     truncate(&detail, 200)
@@ -104,7 +111,7 @@ pub async fn record(url: String, key: String, outcome: Outcome) {
             }
         }
         Err(e) => {
-            console_log!("[uptime] record {} failed: {}", outcome.tool, e);
+            console_log!("[telemetry] record {} failed: {}", outcome.tool, e);
         }
     }
 }

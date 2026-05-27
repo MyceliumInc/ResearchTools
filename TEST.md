@@ -1,13 +1,13 @@
-# Tools endpoint smoke + latency script
+# Endpoint smoke + latency script
 
-Live-tests every `/v1/*` endpoint against `tools.mycelium.markets` using
-`curl`. Times each call via `curl`'s `-w` timing format, validates the JSON
-shape with `jq`, and prints PASS/FAIL per endpoint.
+Live-tests every `/v1/*` endpoint using `curl`. Times each call via `curl`'s
+`-w` timing format, validates the JSON shape with `jq`, and prints PASS/FAIL
+per endpoint.
 
 Run all of them:
 
 ```bash
-BASE="${BASE:-https://tools.mycelium.markets}"
+BASE="${BASE:-http://127.0.0.1:8787}"
 
 fmt='time_total=%{time_total}s  http=%{http_code}  size=%{size_download}B\n'
 
@@ -36,6 +36,12 @@ check search_news       /v1/search_news       '{"query":"bitcoin","limit":3}'   
 check fetch_url         /v1/fetch_url         '{"url":"https://www.example.com","max_chars":500}' '.text    | type == "string" and length > 0'
 check encyclopedia_search /v1/encyclopedia_search '{"query":"2028 United States presidential election","limit":3}' '.results | type == "array" and length > 0'
 check prediction_market_search /v1/prediction_market_search '{"query":"2028 presidential election","limit":3}' '.results | type == "array"'
+```
+
+Override `BASE` to test a deployed instance:
+
+```bash
+BASE=https://your-worker.example.com bash test.sh
 ```
 
 ## Repeat N times (latency sample)

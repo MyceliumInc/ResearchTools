@@ -1,4 +1,4 @@
-name = "mycelium-tools"
+name = "research-tools"
 main = "build/worker/shim.mjs"
 compatibility_date = "2026-04-01"
 
@@ -6,9 +6,14 @@ compatibility_date = "2026-04-01"
 pattern = "tools.mycelium.markets"
 custom_domain = true
 
-[vars]
-SUPABASE_URL = "https://sdqyvphxhsxmiiidsndg.supabase.co"
-SUPABASE_PUBLISHABLE_KEY = "sb_publishable_lfySe5qzTKA822SIy0-WDg_cKNF94UR"
+# Optional telemetry sink. If TELEMETRY_URL is set, each /v1/* response is
+# reported as a JSON POST to this URL: {tool, ms, status, error}.
+# TELEMETRY_AUTH (optional) is sent as both `Authorization: Bearer <value>`
+# and `apikey: <value>` headers (the latter is harmless for non-Supabase
+# receivers).
+# [vars]
+# TELEMETRY_URL = "https://example.com/ingest"
+# TELEMETRY_AUTH = "..."
 
 [placement]
 mode = "smart"
