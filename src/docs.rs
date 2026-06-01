@@ -74,6 +74,7 @@ const HTML: &str = r##"<!doctype html>
     <a href="#fetch_url">fetch_url</a>
     <a href="#encyclopedia_search">encyclopedia_search</a>
     <a href="#prediction_market_search">prediction_market_search</a>
+    <a href="#stock_quote">stock_quote</a>
     <a href="#breaking_news">breaking_news</a>
   </p>
 </header>
@@ -98,6 +99,7 @@ GET /docs    &rarr; this page</code></pre>
     <tr><td><code>/v1/fetch_url</code></td><td>3500 chars</td><td>50000</td></tr>
     <tr><td><code>/v1/encyclopedia_search</code></td><td>5</td><td>25</td></tr>
     <tr><td><code>/v1/prediction_market_search</code></td><td>8</td><td>50</td></tr>
+    <tr><td><code>/v1/stock_quote</code></td><td>1 symbol</td><td>max 25 symbols</td></tr>
     <tr><td><code>/v1/breaking_news</code></td><td>up to 20 stories</td><td>—</td></tr>
   </tbody>
 </table>
@@ -236,6 +238,38 @@ GET /docs    &rarr; this page</code></pre>
 <pre><code>curl -s $BASE/v1/prediction_market_search \
   -H 'content-type: application/json' \
   -d '{"query":"2028 US presidential election","limit":8}'</code></pre>
+
+<h2 id="stock_quote"><span class="method">POST</span><span class="endpoint">/v1/stock_quote</span></h2>
+<p>Fetch stock quote information for a given symbol. Input a list of symbols to fetch quotes for.
+    Returns both successful and failed quote fetches in the same response.</p>
+
+<h3>Request</h3>
+<pre><code>{
+  "symbols": ["AAPL"]
+}</code></pre>
+
+<h3>Response</h3>
+<pre><code>{
+  "quotes": [
+    {
+      "symbol":"AAPL",
+      "price":312.06,
+      "change":-0.45,
+      "change_pct":-0.144,
+      "previous_close":312.51,
+      "currency":"USD",
+      "as_of":"Fri May 29 2026 13:00:00 GMT-0700 (Pacific Daylight Time)",
+      "source":"finnhub"
+    }
+  ],
+  "errors": []
+}</code></pre>
+<p><code>source</code> is the upstream data source for this quote (currently always <code>"finnhub"</code>). <code>errors</code> contains any symbols that failed to fetch, along with an error message.</p>
+
+<h3>curl</h3>
+<pre><code>curl -s $BASE/v1/stock_quote \
+  -H 'content-type: application/json' \
+  -d '{"symbols":"AAPL"}'</code></pre>
 
 <h2 id="breaking_news"><span class="method">POST</span><span class="endpoint">/v1/breaking_news</span></h2>
 <p>Surfaces stories the wire is covering <em>right now</em>. Pulls headlines from a handful of major outlets (BBC, NYT, Guardian, NPR, CNN, Al Jazeera, Sky News), groups near-duplicates via entity-blocked Jaccard clustering on stemmed tokens, and returns one representative per cluster. No embedding model, no LLM &mdash; pure token math, sub-second cold latency. Responses are edge-cached for 30 seconds.</p>

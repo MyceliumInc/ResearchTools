@@ -5,3 +5,8 @@ node_modules
 Cargo.lock
 package-lock.json
 bun.lock
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+*.log
