@@ -103,27 +103,39 @@ const HTML: &str = r##"<!doctype html>
   .ep-body { padding: 4px 16px 18px; border-top: 1px solid var(--rule); }
   .ep-body > h3:first-child { margin-top: 14px; }
   .ep-body > p { font-size: 14px; }
+
+  .tryit { background: #faf8f2; border: 1px solid var(--rule); border-radius: 5px; padding: 12px 14px; margin: 6px 0 4px; }
+  .fields { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; }
+  .fields label { display: inline-flex; flex-direction: column; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); gap: 4px; }
+  .fields input { font: inherit; font-size: 13px; padding: 6px 9px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; min-width: 180px; }
+  .fields input.num { min-width: 78px; }
+  .run { font: inherit; font-size: 13px; font-weight: 600; padding: 7px 16px; border: 1px solid var(--accent); border-radius: 4px; background: var(--accent); color: #fff; cursor: pointer; }
+  .run:hover { background: #6b5836; }
+  .run:disabled { opacity: 0.55; cursor: default; }
+  .out { margin: 12px 0 0; max-height: 360px; overflow: auto; white-space: pre-wrap; word-break: break-word; background: #fff; border: 1px solid var(--rule); color: #333; }
+  .out.empty { color: var(--muted); }
 </style>
 </head>
 <body>
 
 <header>
   <h1>Research Tools</h1>
-  <p class="sub">Public HTTP research endpoints for LLM agents. No auth, structured JSON in and out. Click any endpoint to expand its contract.</p>
+  <p class="sub">Public HTTP research endpoints for LLM agents. No auth, structured JSON in and out. Click any endpoint to expand its contract &mdash; each card has a live <strong>Try it</strong> form that posts to this same worker.</p>
   <p class="nav">
-    <a href="#search_web">search_web</a>
-    <a href="#search_news">search_news</a>
-    <a href="#fetch_url">fetch_url</a>
-    <a href="#encyclopedia_search">encyclopedia_search</a>
-    <a href="#prediction_market_search">prediction_market_search</a>
-    <a href="#stock_quote">stock_quote</a>
-    <a href="#breaking_news">breaking_news</a>
-    <a href="#pentagon_pizza">pentagon_pizza</a>
+    <a href="#web">web</a>
+    <a href="#news">news</a>
+    <a href="#fetch">fetch</a>
+    <a href="#encyclopedia">encyclopedia</a>
+    <a href="#predictions">predictions</a>
+    <a href="#stocks">stocks</a>
+    <a href="#breaking">breaking</a>
+    <a href="#pizza">pizza</a>
+    <a href="#doomsday">doomsday</a>
   </p>
 </header>
 
 <h2>Overview</h2>
-<p>Every endpoint is <code>POST application/json</code> and returns <code>application/json</code>. There is no authentication &mdash; the service is public and only scrapes/queries public sources. Open to any caller. Set <code>BASE</code> to the worker origin (<code>https://tools.mycelium.markets</code>) for the curl snippets below.</p>
+<p>Every endpoint is <code>POST application/json</code> and returns <code>application/json</code>. There is no authentication &mdash; the service is public and only scrapes/queries public sources. Open to any caller. Set <code>BASE</code> to the worker origin (<code>https://tools.mycelium.markets</code>) for the curl snippets below; the <strong>Try it</strong> forms post to the current origin directly.</p>
 
 <h3>Health</h3>
 <pre><code>GET /        &rarr; "ok"
@@ -137,22 +149,23 @@ GET /docs    &rarr; this page</code></pre>
 <table>
   <thead><tr><th>Endpoint</th><th>Default limit</th><th>Max</th></tr></thead>
   <tbody>
-    <tr><td><a href="#search_web"><code>/v1/search_web</code></a></td><td>8</td><td>20</td></tr>
-    <tr><td><a href="#search_news"><code>/v1/search_news</code></a></td><td>10</td><td>50</td></tr>
-    <tr><td><a href="#fetch_url"><code>/v1/fetch_url</code></a></td><td>3500 chars</td><td>50000</td></tr>
-    <tr><td><a href="#encyclopedia_search"><code>/v1/encyclopedia_search</code></a></td><td>5</td><td>25</td></tr>
-    <tr><td><a href="#prediction_market_search"><code>/v1/prediction_market_search</code></a></td><td>8</td><td>50</td></tr>
-    <tr><td><a href="#stock_quote"><code>/v1/stock_quote</code></a></td><td>1 symbol</td><td>25 symbols</td></tr>
-    <tr><td><a href="#breaking_news"><code>/v1/breaking_news</code></a></td><td>up to 20 stories</td><td>&mdash;</td></tr>
-    <tr><td><a href="#pentagon_pizza"><code>/v1/pentagon_pizza</code></a></td><td>no params</td><td>&mdash;</td></tr>
+    <tr><td><a href="#web"><code>/v1/web</code></a></td><td>8</td><td>20</td></tr>
+    <tr><td><a href="#news"><code>/v1/news</code></a></td><td>10</td><td>50</td></tr>
+    <tr><td><a href="#fetch"><code>/v1/fetch</code></a></td><td>3500 chars</td><td>50000</td></tr>
+    <tr><td><a href="#encyclopedia"><code>/v1/encyclopedia</code></a></td><td>5</td><td>25</td></tr>
+    <tr><td><a href="#predictions"><code>/v1/predictions</code></a></td><td>8</td><td>50</td></tr>
+    <tr><td><a href="#stocks"><code>/v1/stocks</code></a></td><td>1 symbol</td><td>25 symbols</td></tr>
+    <tr><td><a href="#breaking"><code>/v1/breaking</code></a></td><td>up to 20 stories</td><td>&mdash;</td></tr>
+    <tr><td><a href="#pizza"><code>/v1/pizza</code></a></td><td>no params</td><td>&mdash;</td></tr>
+    <tr><td><a href="#doomsday"><code>/v1/doomsday</code></a></td><td>no params</td><td>&mdash;</td></tr>
   </tbody>
 </table>
 
 <h2>Endpoints</h2>
 
-<details class="ep" id="search_web">
+<details class="ep" id="web">
   <summary>
-    <span class="sline"><span class="method">POST</span><span class="route">/v1/search_web</span></span>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/web</span></span>
     <span class="sdesc">Web search &mdash; Exa if keyed, else a keyless Mojeek &rarr; DuckDuckGo &rarr; Marginalia chain.</span>
   </summary>
   <div class="ep-body">
@@ -172,16 +185,25 @@ GET /docs    &rarr; this page</code></pre>
     }
   ]
 }</code></pre>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <label>query <input id="web_query" type="text" value="OpenAI o1 release date"></label>
+        <label>limit <input id="web_limit" class="num" type="number" value="5"></label>
+        <button class="run" onclick="run('/v1/web','out_web',()=>clean({query:val('web_query'),limit:num('web_limit')}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_web">Response appears here.</pre>
+    </div>
     <h3>curl</h3>
-    <pre><code>curl -s $BASE/v1/search_web \
+    <pre><code>curl -s $BASE/v1/web \
   -H 'content-type: application/json' \
   -d '{"query":"OpenAI o1 release date","limit":5}'</code></pre>
   </div>
 </details>
 
-<details class="ep" id="search_news">
+<details class="ep" id="news">
   <summary>
-    <span class="sline"><span class="method">POST</span><span class="route">/v1/search_news</span></span>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/news</span></span>
     <span class="sdesc">News search via Bing News RSS, recency-sorted.</span>
   </summary>
   <div class="ep-body">
@@ -201,16 +223,25 @@ GET /docs    &rarr; this page</code></pre>
     }
   ]
 }</code></pre>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <label>query <input id="news_query" type="text" value="Federal Reserve rate decision"></label>
+        <label>limit <input id="news_limit" class="num" type="number" value="10"></label>
+        <button class="run" onclick="run('/v1/news','out_news',()=>clean({query:val('news_query'),limit:num('news_limit')}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_news">Response appears here.</pre>
+    </div>
     <h3>curl</h3>
-    <pre><code>curl -s $BASE/v1/search_news \
+    <pre><code>curl -s $BASE/v1/news \
   -H 'content-type: application/json' \
   -d '{"query":"Federal Reserve rate decision","limit":10}'</code></pre>
   </div>
 </details>
 
-<details class="ep" id="fetch_url">
+<details class="ep" id="fetch">
   <summary>
-    <span class="sline"><span class="method">POST</span><span class="route">/v1/fetch_url</span></span>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/fetch</span></span>
     <span class="sdesc">Fetch one page as cleaned text &mdash; Jina Reader, then raw HTML fallback.</span>
   </summary>
   <div class="ep-body">
@@ -227,16 +258,25 @@ GET /docs    &rarr; this page</code></pre>
   "source": "jina"
 }</code></pre>
     <p><code>source</code> is <code>"jina"</code> or <code>"raw"</code>.</p>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <label>url <input id="fetch_url" type="text" value="https://example.com"></label>
+        <label>max_chars <input id="fetch_max" class="num" type="number" value="2000"></label>
+        <button class="run" onclick="run('/v1/fetch','out_fetch',()=>clean({url:val('fetch_url'),max_chars:num('fetch_max')}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_fetch">Response appears here.</pre>
+    </div>
     <h3>curl</h3>
-    <pre><code>curl -s $BASE/v1/fetch_url \
+    <pre><code>curl -s $BASE/v1/fetch \
   -H 'content-type: application/json' \
   -d '{"url":"https://example.com/article","max_chars":2000}'</code></pre>
   </div>
 </details>
 
-<details class="ep" id="encyclopedia_search">
+<details class="ep" id="encyclopedia">
   <summary>
-    <span class="sline"><span class="method">POST</span><span class="route">/v1/encyclopedia_search</span></span>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/encyclopedia</span></span>
     <span class="sdesc">Merged reference lookup across Wikipedia + Grokipedia.</span>
   </summary>
   <div class="ep-body">
@@ -264,16 +304,25 @@ GET /docs    &rarr; this page</code></pre>
   ]
 }</code></pre>
     <p><code>source</code> is <code>"wikipedia"</code> or <code>"grokipedia"</code>.</p>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <label>query <input id="enc_query" type="text" value="LMSR market maker"></label>
+        <label>limit <input id="enc_limit" class="num" type="number" value="5"></label>
+        <button class="run" onclick="run('/v1/encyclopedia','out_enc',()=>clean({query:val('enc_query'),limit:num('enc_limit')}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_enc">Response appears here.</pre>
+    </div>
     <h3>curl</h3>
-    <pre><code>curl -s $BASE/v1/encyclopedia_search \
+    <pre><code>curl -s $BASE/v1/encyclopedia \
   -H 'content-type: application/json' \
   -d '{"query":"LMSR market maker","limit":5}'</code></pre>
   </div>
 </details>
 
-<details class="ep" id="prediction_market_search">
+<details class="ep" id="predictions">
   <summary>
-    <span class="sline"><span class="method">POST</span><span class="route">/v1/prediction_market_search</span></span>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/predictions</span></span>
     <span class="sdesc">Cross-venue sentiment &mdash; Polymarket + Manifold + Kalshi.</span>
   </summary>
   <div class="ep-body">
@@ -297,16 +346,25 @@ GET /docs    &rarr; this page</code></pre>
   ]
 }</code></pre>
     <p><code>source</code> is <code>"polymarket"</code>, <code>"manifold"</code>, or <code>"kalshi"</code>. <code>probability_pct</code> may be <code>null</code> when the upstream market hasn't priced. <code>volume</code> is in the upstream venue's native units (typically USD).</p>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <label>query <input id="pred_query" type="text" value="2028 US presidential election"></label>
+        <label>limit <input id="pred_limit" class="num" type="number" value="8"></label>
+        <button class="run" onclick="run('/v1/predictions','out_pred',()=>clean({query:val('pred_query'),limit:num('pred_limit')}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_pred">Response appears here.</pre>
+    </div>
     <h3>curl</h3>
-    <pre><code>curl -s $BASE/v1/prediction_market_search \
+    <pre><code>curl -s $BASE/v1/predictions \
   -H 'content-type: application/json' \
   -d '{"query":"2028 US presidential election","limit":8}'</code></pre>
   </div>
 </details>
 
-<details class="ep" id="stock_quote">
+<details class="ep" id="stocks">
   <summary>
-    <span class="sline"><span class="method">POST</span><span class="route">/v1/stock_quote</span></span>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/stocks</span></span>
     <span class="sdesc">Keyless equity quotes from CNBC &mdash; up to 25 symbols per call.</span>
   </summary>
   <div class="ep-body">
@@ -345,16 +403,24 @@ GET /docs    &rarr; this page</code></pre>
   ]
 }</code></pre>
     <p>Any numeric field may be <code>null</code> when the upstream omits it. <code>market_cap</code> is a display string (e.g. <code>"4.514T"</code>), not a number. <code>errors</code> lists symbols that could not be resolved, each with a message. <code>source</code> is currently always <code>"cnbc"</code>.</p>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <label>symbols (comma-separated) <input id="stk_symbols" type="text" value="AAPL, MSFT"></label>
+        <button class="run" onclick="run('/v1/stocks','out_stk',()=>({symbols:arr('stk_symbols')}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_stk">Response appears here.</pre>
+    </div>
     <h3>curl</h3>
-    <pre><code>curl -s $BASE/v1/stock_quote \
+    <pre><code>curl -s $BASE/v1/stocks \
   -H 'content-type: application/json' \
   -d '{"symbols":["AAPL","MSFT"]}'</code></pre>
   </div>
 </details>
 
-<details class="ep" id="breaking_news">
+<details class="ep" id="breaking">
   <summary>
-    <span class="sline"><span class="method">POST</span><span class="route">/v1/breaking_news</span></span>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/breaking</span></span>
     <span class="sdesc">What the wire is covering right now &mdash; multi-outlet clustered headlines.</span>
   </summary>
   <div class="ep-body">
@@ -374,16 +440,23 @@ GET /docs    &rarr; this page</code></pre>
   ]
 }</code></pre>
     <p><code>source</code> is the outlet that supplied the representative headline (earliest scoop, non-live-blog URL preferred). <code>sources</code> is the count of distinct outlets covering this story.</p>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <button class="run" onclick="run('/v1/breaking','out_brk',()=>({}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_brk">Response appears here.</pre>
+    </div>
     <h3>curl</h3>
-    <pre><code>curl -s $BASE/v1/breaking_news \
+    <pre><code>curl -s $BASE/v1/breaking \
   -H 'content-type: application/json' \
   -d '{}'</code></pre>
   </div>
 </details>
 
-<details class="ep" id="pentagon_pizza">
+<details class="ep" id="pizza">
   <summary>
-    <span class="sline"><span class="method">POST</span><span class="route">/v1/pentagon_pizza</span></span>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/pizza</span></span>
     <span class="sdesc">Novelty geopolitical signal &mdash; pizzeria activity near the Pentagon.</span>
   </summary>
   <div class="ep-body">
@@ -396,6 +469,17 @@ GET /docs    &rarr; this page</code></pre>
   "defcon_level": 5,
   "defcon_severity": 4.8,
   "overall_index": 42,
+  "reason": "compute_doughcon_v9: quiet",
+  "smoothed_index": 0.87,
+  "raw_index": 0,
+  "intensity_score": 0,
+  "breadth_score": 0,
+  "night_multiplier": 0.86,
+  "persistence_factor": 1,
+  "high_count": 0,
+  "extreme_count": 0,
+  "max_pct": 0,
+  "max_current_popularity": 0,
   "active_spikes": 0,
   "spike_events": [
     {
@@ -425,9 +509,58 @@ GET /docs    &rarr; this page</code></pre>
   "places_above_150": 1,
   "places_above_200": 0
 }</code></pre>
-    <p><code>defcon_level</code> runs 5 (calm) down to 1 (most unusual). <code>spike_events</code> lists places whose current popularity is anomalously high; <code>place_data</code> carries the per-pizzeria snapshot. <code>data_freshness</code> reflects how recent the upstream readings are.</p>
+    <p><code>defcon_level</code> runs 5 (calm) down to 1 (most unusual). <code>reason</code> is the upstream's plain-language summary of the current call; <code>smoothed_index</code>/<code>raw_index</code> and the <code>*_score</code> / <code>*_count</code> / <code>night_multiplier</code> / <code>persistence_factor</code> / <code>max_pct</code> fields are the decomposition behind the headline number. <code>spike_events</code> lists places whose current popularity is anomalously high; <code>place_data</code> carries the per-pizzeria snapshot. <code>data_freshness</code> reflects how recent the upstream readings are.</p>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <button class="run" onclick="run('/v1/pizza','out_pz',()=>({}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_pz">Response appears here.</pre>
+    </div>
     <h3>curl</h3>
-    <pre><code>curl -s $BASE/v1/pentagon_pizza \
+    <pre><code>curl -s $BASE/v1/pizza \
+  -H 'content-type: application/json' \
+  -d '{}'</code></pre>
+  </div>
+</details>
+
+<details class="ep" id="doomsday">
+  <summary>
+    <span class="sline"><span class="method">POST</span><span class="route">/v1/doomsday</span></span>
+    <span class="sdesc">Curated geopolitical-risk prediction markets from Polymarket.</span>
+  </summary>
+  <div class="ep-body">
+    <p>A curated basket of geopolitical "doomsday" markets &mdash; strikes, invasions, and conflict-escalation contracts &mdash; sourced from <a href="https://www.pizzint.watch">pizzint.watch</a>'s NEH index (live Polymarket prices). Each market carries its YES <code>probability_pct</code>, region tag, and volume. Unlike <a href="#predictions"><code>/v1/predictions</code></a> (keyword search across venues), this is a fixed, pre-selected risk basket. Responses are edge-cached for 60 seconds.</p>
+    <h3>Request</h3>
+    <pre><code>{}</code></pre>
+    <h3>Response</h3>
+    <pre><code>{
+  "markets": [
+    {
+      "label":           "US strike on Cuba by December 31?",
+      "slug":            "us-strike-on-cuba-by-december-31",
+      "region":          "americas",
+      "url":             "https://polymarket.com/event/us-strike-on-cuba-by-december-31",
+      "probability_pct": 41.5,
+      "volume":          3557316.59,
+      "volume_24h":      197938.09,
+      "end_date_ms":     1798779599999,
+      "image":           "https://polymarket-upload.s3.us-east-2.amazonaws.com/..."
+    }
+  ],
+  "timestamp":  "2026-06-06T14:15:39.779Z",
+  "source_url": "https://www.pizzint.watch/api/neh-index/doomsday"
+}</code></pre>
+    <p><code>region</code> is one of <code>"americas"</code>, <code>"middle_east"</code>, <code>"asia"</code>, <code>"europe"</code>, <code>"global"</code>. <code>probability_pct</code> is the YES price scaled to 0&ndash;100. <code>end_date_ms</code> is the market close time as a Unix epoch in <strong>milliseconds</strong> (may be <code>null</code>). <code>volume</code> / <code>volume_24h</code> are in USD.</p>
+    <h3>Try it</h3>
+    <div class="tryit">
+      <div class="fields">
+        <button class="run" onclick="run('/v1/doomsday','out_dd',()=>({}),this)">Send</button>
+      </div>
+      <pre class="out empty" id="out_dd">Response appears here.</pre>
+    </div>
+    <h3>curl</h3>
+    <pre><code>curl -s $BASE/v1/doomsday \
   -H 'content-type: application/json' \
   -d '{}'</code></pre>
   </div>
@@ -436,7 +569,7 @@ GET /docs    &rarr; this page</code></pre>
 <h2>Operational notes</h2>
 <ul>
   <li><strong>Telemetry.</strong> If <code>TELEMETRY_URL</code> is configured, each <code>/v1/*</code> handler POSTs <code>{tool, ms, status, error}</code> to that URL via <code>ctx.waitUntil</code> after responding &mdash; no caller-visible latency. Opt-in; unset by default.</li>
-  <li><strong>Caching.</strong> Identical request bodies are served from a short edge cache: <code>search_web</code> and <code>encyclopedia_search</code> 5 min, <code>prediction_market_search</code> and <code>pentagon_pizza</code> 1 min, <code>breaking_news</code> 30 s, <code>stock_quote</code> 5 s. <code>search_news</code> and <code>fetch_url</code> fetch fresh on each call.</li>
+  <li><strong>Caching.</strong> Identical request bodies are served from a short edge cache: <code>web</code> and <code>encyclopedia</code> 5 min, <code>predictions</code>, <code>pizza</code> and <code>doomsday</code> 1 min, <code>breaking</code> 30 s, <code>stocks</code> 5 s. <code>news</code> and <code>fetch</code> fetch fresh on each call.</li>
   <li><strong>Rate limits.</strong> None enforced today. Be reasonable.</li>
   <li><strong>Stability.</strong> v1 routes and JSON shapes won't break. New fields will always be additive.</li>
 </ul>
@@ -444,6 +577,40 @@ GET /docs    &rarr; this page</code></pre>
 <footer>
   Worker: Rust + WASM on Cloudflare
 </footer>
+
+<script>
+  function val(id) { return document.getElementById(id).value.trim(); }
+  function num(id) { var v = document.getElementById(id).value.trim(); return v === "" ? undefined : Number(v); }
+  function arr(id) { return val(id).split(",").map(function (s) { return s.trim(); }).filter(Boolean); }
+  function clean(obj) {
+    var out = {};
+    for (var key in obj) { if (obj[key] !== undefined && obj[key] !== "") out[key] = obj[key]; }
+    return out;
+  }
+  async function run(route, outId, build, btn) {
+    var out = document.getElementById(outId);
+    var label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "…";
+    out.classList.remove("empty");
+    out.textContent = "Loading…";
+    try {
+      var body = build();
+      var t0 = performance.now();
+      var res = await fetch(route, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+      var ms = Math.round(performance.now() - t0);
+      var text = await res.text();
+      var pretty = text;
+      try { pretty = JSON.stringify(JSON.parse(text), null, 2); } catch (e) {}
+      out.textContent = "// " + res.status + " · " + ms + "ms\n" + pretty;
+    } catch (err) {
+      out.textContent = "Request failed: " + err;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = label;
+    }
+  }
+</script>
 
 </body>
 </html>"##;

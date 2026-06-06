@@ -19,29 +19,32 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
     let result = Router::new()
         .get("/", |_, _| Response::ok("ok"))
         .get("/docs", |_, _| docs::page())
-        .post_async("/v1/search_web", |req, ctx| async move {
-            tools::search_web::run(req, ctx).await
+        .post_async("/v1/web", |req, ctx| async move {
+            tools::web::run(req, ctx).await
         })
-        .post_async("/v1/search_news", |req, _| async move {
-            tools::search_news::run(req).await
+        .post_async("/v1/news", |req, _| async move {
+            tools::news::run(req).await
         })
-        .post_async("/v1/fetch_url", |req, _| async move {
-            tools::fetch_url::run(req).await
+        .post_async("/v1/fetch", |req, _| async move {
+            tools::fetch::run(req).await
         })
-        .post_async("/v1/encyclopedia_search", |req, _| async move {
+        .post_async("/v1/encyclopedia", |req, _| async move {
             tools::encyclopedia::run(req).await
         })
-        .post_async("/v1/prediction_market_search", |req, _| async move {
-            tools::prediction_markets::run(req).await
+        .post_async("/v1/predictions", |req, _| async move {
+            tools::predictions::run(req).await
         })
-        .post_async("/v1/pentagon_pizza", |req, _| async move {
-            tools::pentagon_pizza::run(req).await
+        .post_async("/v1/pizza", |req, _| async move {
+            tools::pizza::run(req).await
         })
-        .post_async("/v1/stock_quote", |req, _| async move {
-            tools::stock_quote::run(req).await
+        .post_async("/v1/stocks", |req, _| async move {
+            tools::stocks::run(req).await
         })
-        .post_async("/v1/breaking_news", |req, _| async move {
-            tools::breaking_news::run(req).await
+        .post_async("/v1/breaking", |req, _| async move {
+            tools::breaking::run(req).await
+        })
+        .post_async("/v1/doomsday", |req, _| async move {
+            tools::doomsday::run(req).await
         })
         .run(req, env)
         .await;

@@ -1,11 +1,12 @@
-pub mod breaking_news;
+pub mod breaking;
+pub mod doomsday;
 pub mod encyclopedia;
-pub mod fetch_url;
-pub mod pentagon_pizza;
-pub mod prediction_markets;
-pub mod search_news;
-pub mod search_web;
-pub mod stock_quote;
+pub mod fetch;
+pub mod news;
+pub mod pizza;
+pub mod predictions;
+pub mod stocks;
+pub mod web;
 
 pub fn interleave<T>(sources: Vec<Vec<T>>, limit: usize) -> Vec<T> {
     let mut output = Vec::with_capacity(limit);

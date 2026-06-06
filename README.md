@@ -10,7 +10,8 @@ endpoints designed to be called from LLM agents:
 - encyclopedia search across Wikipedia + Grokipedia
 - prediction-market search across Polymarket + Manifold + Kalshi
 - pentagon pizza index (novelty signal)
-- stock quotes (Finnhub, requires `FINNHUB_API_KEY`)
+- doomsday markets (curated geopolitical-risk Polymarket basket, via pizzint)
+- stock quotes (CNBC, keyless)
 
 Structured JSON in, structured JSON out. No auth, no API keys required for
 callers. Runs on the edge with low cold-start latency thanks to a pure-Rust
@@ -22,14 +23,15 @@ All endpoints are `POST application/json` and return `application/json`.
 
 | Route | Request | Response |
 | --- | --- | --- |
-| `POST /v1/search_web` | `{query, limit?}` | `{results: [{title, url, snippet}]}` |
-| `POST /v1/search_news` | `{query, limit?}` | `{items: [{title, link, pub_date}]}` |
-| `POST /v1/fetch_url` | `{url, max_chars?}` | `{text, source: "jina" \| "raw"}` |
-| `POST /v1/encyclopedia_search` | `{query, limit?}` | `{results: [{source, title, snippet, url}]}` |
-| `POST /v1/prediction_market_search` | `{query, limit?}` | `{results: [{source, question, url, probability_pct, end_date, volume}]}` |
-| `POST /v1/breaking_news` | `{}` | `{stories: [{headline, url, source, sources}]}` |
-| `POST /v1/pentagon_pizza` | `{}` | `{...}` |
-| `POST /v1/stock_quote` | `{symbols: [str]}` | `{quotes: [...], errors: [...]}` |
+| `POST /v1/web` | `{query, limit?}` | `{results: [{title, url, snippet}]}` |
+| `POST /v1/news` | `{query, limit?}` | `{items: [{title, link, pub_date}]}` |
+| `POST /v1/fetch` | `{url, max_chars?}` | `{text, source: "jina" \| "raw"}` |
+| `POST /v1/encyclopedia` | `{query, limit?}` | `{results: [{source, title, snippet, url}]}` |
+| `POST /v1/predictions` | `{query, limit?}` | `{results: [{source, question, url, probability_pct, end_date, volume}]}` |
+| `POST /v1/breaking` | `{}` | `{stories: [{headline, url, source, sources}]}` |
+| `POST /v1/pizza` | `{}` | `{...}` |
+| `POST /v1/stocks` | `{symbols: [str]}` | `{quotes: [...], errors: [...]}` |
+| `POST /v1/doomsday` | `{}` | `{markets: [...], timestamp, source_url}` |
 | `GET /` | — | `ok` |
 | `GET /docs` | — | rendered API spec |
 
@@ -59,26 +61,27 @@ src/
   docs.rs                      # /docs HTML
   tools/
     mod.rs                     # callable-tool module list + generic interleave()
-    search_web/
+    web/
       mod.rs                   # Exa, else keyless fallback chain
       exa.rs                   # Exa Search API
       mojeek.rs                # Mojeek scrape (keyless, primary fallback)
       duckduckgo.rs            # DuckDuckGo Lite scrape (keyless)
       marginalia.rs            # Marginalia public JSON API (keyless)
-    search_news/mod.rs         # Bing News RSS
-    fetch_url/mod.rs           # Jina Reader + raw fallback
+    news/mod.rs                # Bing News RSS
+    fetch/mod.rs               # Jina Reader + raw fallback
     encyclopedia/
       mod.rs                   # merges Wikipedia + Grokipedia
       wikipedia.rs
       grokipedia.rs
-    prediction_markets/
+    predictions/
       mod.rs                   # merges Polymarket + Manifold + Kalshi
       polymarket.rs
       manifold.rs
       kalshi.rs
-    pentagon_pizza/mod.rs      # pentagon pizza index
-    stock_quote/mod.rs         # Finnhub quotes
-    breaking_news/
+    pizza/mod.rs               # pentagon pizza index
+    doomsday/mod.rs            # curated geopolitical-risk market basket (pizzint)
+    stocks/mod.rs              # CNBC quotes (keyless)
+    breaking/
       mod.rs                   # multi-feed RSS, entity-blocked Jaccard clustering
       extract.rs               # tokenize / entities / headline cleanup / jaccard
       dates.rs                 # RFC-2822 pubDate parsing

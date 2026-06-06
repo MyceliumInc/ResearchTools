@@ -12,6 +12,17 @@ struct PentagonResult {
     defcon_level: u32,
     defcon_severity: f64,
     overall_index: u32,
+    reason: String,
+    smoothed_index: f64,
+    raw_index: f64,
+    intensity_score: f64,
+    breadth_score: f64,
+    night_multiplier: f64,
+    persistence_factor: f64,
+    high_count: u32,
+    extreme_count: u32,
+    max_pct: f64,
+    max_current_popularity: u32,
 
     active_spikes: u32,
     spike_events: Vec<SpikeEvent>,
@@ -69,6 +80,28 @@ struct RawDefconDetails {
     places_above_200: u32,
     sustained: bool,
     sentinel: bool,
+    #[serde(default)]
+    reason: String,
+    #[serde(default)]
+    smoothed_index: f64,
+    #[serde(default)]
+    raw_index: f64,
+    #[serde(default)]
+    intensity_score: f64,
+    #[serde(default)]
+    breadth_score: f64,
+    #[serde(default)]
+    night_multiplier: f64,
+    #[serde(default)]
+    persistence_factor: f64,
+    #[serde(default)]
+    high_count: u32,
+    #[serde(default)]
+    extreme_count: u32,
+    #[serde(default)]
+    max_pct: f64,
+    #[serde(default)]
+    max_current_popularity: u32,
 }
 
 #[derive(Deserialize)]
@@ -109,6 +142,17 @@ impl From<Raw> for PentagonResult {
             defcon_level: raw.defcon_level,
             defcon_severity: raw.defcon_details.defcon_severity_decimal,
             overall_index: raw.overall_index,
+            reason: raw.defcon_details.reason.clone(),
+            smoothed_index: raw.defcon_details.smoothed_index,
+            raw_index: raw.defcon_details.raw_index,
+            intensity_score: raw.defcon_details.intensity_score,
+            breadth_score: raw.defcon_details.breadth_score,
+            night_multiplier: raw.defcon_details.night_multiplier,
+            persistence_factor: raw.defcon_details.persistence_factor,
+            high_count: raw.defcon_details.high_count,
+            extreme_count: raw.defcon_details.extreme_count,
+            max_pct: raw.defcon_details.max_pct,
+            max_current_popularity: raw.defcon_details.max_current_popularity,
             active_spikes: raw.active_spikes,
             spike_events: raw.events.into_iter().filter_map(map_event).collect(),
             data_freshness: raw.data_freshness,
@@ -160,7 +204,7 @@ fn map_event(raw: RawEvent) -> Option<SpikeEvent> {
 }
 
 pub async fn run(req: Request) -> Result<Response> {
-    cache_or(req, "pentagon_pizza", 60, execute).await
+    cache_or(req, "pizza", 60, execute).await
 }
 
 async fn execute(raw: Vec<u8>) -> Result<Vec<u8>> {

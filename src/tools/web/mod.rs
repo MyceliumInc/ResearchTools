@@ -32,7 +32,7 @@ pub async fn run(req: Request, ctx: RouteContext<()>) -> Result<Response> {
         .ok()
         .map(|secret| secret.to_string())
         .filter(|secret| !secret.is_empty());
-    cache_or(req, "search_web", 300, move |body| execute(body, exa_key)).await
+    cache_or(req, "web", 300, move |body| execute(body, exa_key)).await
 }
 
 async fn execute(raw: Vec<u8>, exa_key: Option<String>) -> Result<Vec<u8>> {

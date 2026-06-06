@@ -30,7 +30,7 @@ struct Resp {
 }
 
 pub async fn run(req: Request) -> Result<Response> {
-    cache_or(req, "prediction_market_search", 60, execute).await
+    cache_or(req, "predictions", 60, execute).await
 }
 
 async fn execute(raw: Vec<u8>) -> Result<Vec<u8>> {

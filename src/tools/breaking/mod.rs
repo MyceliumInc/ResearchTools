@@ -50,7 +50,7 @@ struct Item {
 }
 
 pub async fn run(req: Request) -> Result<Response> {
-    cache_or(req, "breaking_news", 30, |_body| async move {
+    cache_or(req, "breaking", 30, |_body| async move {
         let stories = pipeline().await;
         serde_json::to_vec(&Out { stories })
             .map_err(|error| Error::RustError(format!("serialize: {}", error)))

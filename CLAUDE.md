@@ -20,26 +20,27 @@ src/
   docs.rs           # /docs HTML
   tools/
     mod.rs                  # callable-tool module list + generic interleave()
-    search_web/
+    web/
       mod.rs                # Exa if keyed, else keyless fallback chain
       exa.rs                # Exa Search API
       mojeek.rs             # Mojeek scrape (keyless, primary fallback)
       duckduckgo.rs         # DuckDuckGo Lite scrape (keyless)
       marginalia.rs         # Marginalia public JSON API (keyless)
-    search_news/mod.rs      # Bing News RSS
-    fetch_url/mod.rs        # Jina Reader + raw HTML fallback
+    news/mod.rs             # Bing News RSS
+    fetch/mod.rs            # Jina Reader + raw HTML fallback
     encyclopedia/
       mod.rs                # merges Wikipedia + Grokipedia (parallel)
       wikipedia.rs
       grokipedia.rs
-    prediction_markets/
+    predictions/
       mod.rs                # merges Polymarket + Manifold + Kalshi (parallel)
       polymarket.rs
       manifold.rs
       kalshi.rs
-    pentagon_pizza/mod.rs   # pentagon pizza index
-    stock_quote/mod.rs      # Finnhub quotes (needs FINNHUB_API_KEY)
-    breaking_news/
+    pizza/mod.rs            # pentagon pizza index
+    doomsday/mod.rs         # curated geopolitical-risk market basket (pizzint)
+    stocks/mod.rs           # CNBC quotes (keyless)
+    breaking/
       mod.rs                # multi-feed RSS → entity-blocked Jaccard cluster
       extract.rs            # tokenize / entities / headline cleanup / jaccard
       dates.rs              # RFC-2822 pubDate parsing
@@ -55,7 +56,7 @@ configured telemetry webhook so the caller never waits.
 - **No auth, by design.** Endpoint is public; tools only scrape public sources.
 - **Edge-cached by request body.** `cache.rs`'s `cache_or` keys the Cloudflare
   Cache API on `(tool, hash(body))` so identical calls are served from the
-  edge. TTLs are per-tool (see `/docs`); `search_news` and `fetch_url` opt out
+  edge. TTLs are per-tool (see `/docs`); `news` and `fetch` opt out
   and fetch fresh.
 - **Errors as HTTP 200 + `{error}`.** Upstream failures surface as a soft
   error so the LLM doesn't trigger a retry loop. Bad input → 4xx; worker

@@ -27,7 +27,7 @@ struct Resp {
 }
 
 pub async fn run(req: Request) -> Result<Response> {
-    cache_or(req, "encyclopedia_search", 300, execute).await
+    cache_or(req, "encyclopedia", 300, execute).await
 }
 
 async fn execute(raw: Vec<u8>) -> Result<Vec<u8>> {
