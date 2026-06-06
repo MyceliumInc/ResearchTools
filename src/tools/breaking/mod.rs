@@ -8,9 +8,15 @@ use extract::{
 };
 use crate::http::{get_text, BOT_UA, TIMEOUT_DEFAULT_MS};
 use crate::text::{extract_xml_tag, strip_cdata};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use worker::*;
+
+#[derive(Deserialize)]
+struct Req {
+    #[serde(default)]
+    query: Option<String>,
+}
 
 #[derive(Serialize)]
 struct Out {
@@ -50,15 +56,31 @@ struct Item {
 }
 
 pub async fn run(req: Request) -> Result<Response> {
-    cache_or(req, "breaking", 30, |_body| async move {
-        let stories = pipeline().await;
+    cache_or(req, "breaking", 30, |body| async move {
+        let keywords = parse_keywords(&body);
+        let stories = pipeline(&keywords).await;
         serde_json::to_vec(&Out { stories })
             .map_err(|error| Error::RustError(format!("serialize: {}", error)))
     })
     .await
 }
 
-async fn pipeline() -> Vec<Story> {
+fn parse_keywords(body: &[u8]) -> Vec<String> {
+    if body.is_empty() {
+        return vec![];
+    }
+    let query = serde_json::from_slice::<Req>(body)
+        .ok()
+        .and_then(|req| req.query)
+        .unwrap_or_default();
+    query
+        .to_lowercase()
+        .split_whitespace()
+        .map(|token| token.to_string())
+        .collect()
+}
+
+async fn pipeline(keywords: &[String]) -> Vec<Story> {
     let pending: Vec<_> = FEEDS.iter().map(|(name, url)| fetch_feed(name, url)).collect();
     let batches = futures::future::join_all(pending).await;
 
@@ -108,6 +130,13 @@ async fn pipeline() -> Vec<Story> {
             })
         })
         .collect();
+
+    if !keywords.is_empty() {
+        stories.retain(|story| {
+            let headline = story.headline.to_lowercase();
+            keywords.iter().all(|keyword| headline.contains(keyword.as_str()))
+        });
+    }
 
     stories.sort_by_key(|story| std::cmp::Reverse(story.sources));
     stories.truncate(MAX_STORIES);
