@@ -1,4 +1,5 @@
-use crate::util::{error_response, send_request_timed, strip_html_doc, BOT_UA, TIMEOUT_SLOW_MS};
+use crate::http::{build_request, error_response, send_request_timed, BOT_UA, TIMEOUT_SLOW_MS};
+use crate::text::{strip_html_doc, truncate};
 use serde::{Deserialize, Serialize};
 use worker::*;
 
@@ -17,43 +18,17 @@ struct Resp {
     source: &'static str,
 }
 
-fn truncate(s: &str, max: usize) -> String {
-    let mut out = String::new();
-    for (i, c) in s.chars().enumerate() {
-        if i >= max {
-            break;
-        }
-        out.push(c);
-    }
-    out
-}
-
-async fn fetch_text(url: &str, user_agent: &str, accept: Option<&str>) -> Result<(u16, String)> {
-    let headers = Headers::new();
-    headers.set("User-Agent", user_agent)?;
-    if let Some(a) = accept {
-        headers.set("Accept", a)?;
-    }
-    let mut init = RequestInit::new();
-    init.with_method(Method::Get).with_headers(headers);
-    let request = Request::new_with_init(url, &init)?;
-    let mut resp = send_request_timed(request, TIMEOUT_SLOW_MS).await?;
-    let status = resp.status_code();
-    let text = resp.text().await.unwrap_or_default();
-    Ok((status, text))
-}
-
 pub async fn run(mut req: Request) -> Result<Response> {
     let body: Req = match req.json().await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("bad request: {}", e)),
+        Ok(value) => value,
+        Err(error) => return error_response(format!("bad request: {}", error)),
     };
     let cap = body.max_chars.unwrap_or(FETCH_CAP).clamp(100, 50_000);
 
     let reader = format!("https://r.jina.ai/{}", body.url);
     let (jina, raw) = futures::future::join(
-        fetch_text(&reader, BOT_UA, Some("text/plain")),
-        fetch_text(&body.url, BOT_UA, None),
+        fetch_text(&reader, Some("text/plain")),
+        fetch_text(&body.url, None),
     )
     .await;
 
@@ -103,9 +78,23 @@ pub async fn run(mut req: Request) -> Result<Response> {
     }
 
     let detail = match (&jina, &raw) {
-        (Err(e), _) => format!("Fetch failed: {}", e),
-        (_, Err(e)) => format!("Fetch failed: {}", e),
-        (Ok((s1, _)), Ok((s2, _))) => format!("Fetch failed: HTTP {}/{}", s1, s2),
+        (Err(error), _) => format!("Fetch failed: {}", error),
+        (_, Err(error)) => format!("Fetch failed: {}", error),
+        (Ok((jina_status, _)), Ok((raw_status, _))) => {
+            format!("Fetch failed: HTTP {}/{}", jina_status, raw_status)
+        }
     };
     error_response(detail)
+}
+
+async fn fetch_text(url: &str, accept: Option<&str>) -> Result<(u16, String)> {
+    let mut headers = vec![("User-Agent", BOT_UA)];
+    if let Some(value) = accept {
+        headers.push(("Accept", value));
+    }
+    let request = build_request(url, Method::Get, &headers, None)?;
+    let mut response = send_request_timed(request, TIMEOUT_SLOW_MS).await?;
+    let status = response.status_code();
+    let text = response.text().await.unwrap_or_default();
+    Ok((status, text))
 }

@@ -1,4 +1,4 @@
-use crate::util::{error_response, get_text, BOT_UA, TIMEOUT_DEFAULT_MS};
+use crate::http::{error_response, get_text, BOT_UA, TIMEOUT_DEFAULT_MS};
 use quick_xml::events::Event;
 use quick_xml::reader::Reader;
 use serde::{Deserialize, Serialize};
@@ -95,20 +95,18 @@ async fn try_source(url: &str) -> Result<Vec<NewsItem>> {
 
 pub async fn run(mut req: Request) -> Result<Response> {
     let body: Req = match req.json().await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("bad request: {}", e)),
+        Ok(value) => value,
+        Err(error) => return error_response(format!("bad request: {}", error)),
     };
     let limit = body.limit.unwrap_or(10).clamp(1, 50);
-    let q = urlencoding::encode(&body.query);
+    let encoded = urlencoding::encode(&body.query);
 
-    let bing = format!("https://www.bing.com/news/search?q={}&format=rss", q);
+    let feed = format!("https://www.bing.com/news/search?q={}&format=rss", encoded);
 
-    let items = match try_source(&bing).await {
-        Ok(v) => v,
-        Err(e) => return error_response(format!("News search failed: {}", e)),
+    let mut items = match try_source(&feed).await {
+        Ok(value) => value,
+        Err(error) => return error_response(format!("News search failed: {}", error)),
     };
-
-    let mut items = items;
     items.truncate(limit);
     Response::from_json(&Resp { items })
 }

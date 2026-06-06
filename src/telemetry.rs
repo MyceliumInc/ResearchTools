@@ -1,3 +1,5 @@
+use crate::http::{build_request, send_request_timed};
+use crate::text::truncate;
 use serde::Serialize;
 use worker::*;
 
@@ -46,10 +48,6 @@ pub fn detect_soft_error(bytes: &[u8]) -> Option<String> {
     Some(truncate(msg, ERROR_MAX_CHARS))
 }
 
-pub fn truncate(s: &str, n: usize) -> String {
-    s.chars().take(n).collect()
-}
-
 pub fn tool_from_path(path: &str) -> Option<String> {
     let rest = path.strip_prefix("/v1/")?;
     let slug = rest.split('/').next()?;
@@ -67,41 +65,33 @@ pub async fn record(sink: Sink, outcome: Outcome) {
         status: outcome.status as i32,
         error: outcome.error.as_deref().unwrap_or(""),
     }) {
-        Ok(s) => s,
-        Err(e) => {
-            console_log!("[telemetry] payload encode failed: {}", e);
+        Ok(encoded) => encoded,
+        Err(error) => {
+            console_log!("[telemetry] payload encode failed: {}", error);
             return;
         }
     };
 
-    let headers = Headers::new();
-    if headers.set("Content-Type", "application/json").is_err() {
-        console_log!("[telemetry] header build failed");
-        return;
-    }
-    if let Some(auth) = &sink.auth {
-        let _ = headers.set("Authorization", &format!("Bearer {}", auth));
-        let _ = headers.set("apikey", auth);
+    let bearer = sink.auth.as_ref().map(|auth| format!("Bearer {}", auth));
+    let mut headers: Vec<(&str, &str)> = vec![("Content-Type", "application/json")];
+    if let (Some(bearer), Some(auth)) = (&bearer, &sink.auth) {
+        headers.push(("Authorization", bearer));
+        headers.push(("apikey", auth));
     }
 
-    let mut init = RequestInit::new();
-    init.with_method(Method::Post)
-        .with_headers(headers)
-        .with_body(Some(wasm_bindgen::JsValue::from_str(&body)));
-
-    let request = match Request::new_with_init(&sink.url, &init) {
-        Ok(r) => r,
-        Err(e) => {
-            console_log!("[telemetry] request build failed: {}", e);
+    let request = match build_request(&sink.url, Method::Post, &headers, Some(body)) {
+        Ok(request) => request,
+        Err(error) => {
+            console_log!("[telemetry] request build failed: {}", error);
             return;
         }
     };
 
-    match crate::util::send_request_timed(request, TIMEOUT_MS).await {
-        Ok(mut resp) => {
-            let status = resp.status_code();
+    match send_request_timed(request, TIMEOUT_MS).await {
+        Ok(mut response) => {
+            let status = response.status_code();
             if status >= 300 {
-                let detail = resp.text().await.unwrap_or_default();
+                let detail = response.text().await.unwrap_or_default();
                 console_log!(
                     "[telemetry] record {} returned {} body={}",
                     outcome.tool,
@@ -110,8 +100,8 @@ pub async fn record(sink: Sink, outcome: Outcome) {
                 );
             }
         }
-        Err(e) => {
-            console_log!("[telemetry] record {} failed: {}", outcome.tool, e);
+        Err(error) => {
+            console_log!("[telemetry] record {} failed: {}", outcome.tool, error);
         }
     }
 }

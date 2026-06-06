@@ -3,13 +3,14 @@
 A small Rust Cloudflare Worker that exposes a handful of public research
 endpoints designed to be called from LLM agents:
 
-- web search (Exa Search API if `EXA_API_KEY` is set, else DuckDuckGo Lite)
-- news search (Google News RSS)
+- web search (Exa Search API if `EXA_API_KEY` is set, else a keyless Mojeek → DuckDuckGo → Marginalia chain)
+- news search (Bing News RSS)
 - breaking news (cross-outlet RSS dedup + cluster, no embedding model)
 - single-URL fetch with readable-text extraction
 - encyclopedia search across Wikipedia + Grokipedia
 - prediction-market search across Polymarket + Manifold + Kalshi
 - pentagon pizza index (novelty signal)
+- stock quotes (Finnhub, requires `FINNHUB_API_KEY`)
 
 Structured JSON in, structured JSON out. No auth, no API keys required for
 callers. Runs on the edge with low cold-start latency thanks to a pure-Rust
@@ -28,11 +29,13 @@ All endpoints are `POST application/json` and return `application/json`.
 | `POST /v1/prediction_market_search` | `{query, limit?}` | `{results: [{source, question, url, probability_pct, end_date, volume}]}` |
 | `POST /v1/breaking_news` | `{}` | `{stories: [{headline, url, source, sources}]}` |
 | `POST /v1/pentagon_pizza` | `{}` | `{...}` |
+| `POST /v1/stock_quote` | `{symbols: [str]}` | `{quotes: [...], errors: [...]}` |
 | `GET /` | — | `ok` |
 | `GET /docs` | — | rendered API spec |
 
 Default limits: 8 (`search_web`, `prediction_market_search`), 10
-(`search_news`), 5 (`encyclopedia_search`), 3500 chars (`fetch_url`).
+(`search_news`), 5 (`encyclopedia_search`), 3500 chars (`fetch_url`). Max 25
+symbols for `stock_quote`.
 
 **Error contract.** Upstream failures return HTTP 200 with
 `{"error": "<message>"}` so callers can surface a soft error to an LLM
@@ -41,20 +44,44 @@ return 5xx.
 
 ## Layout
 
+Each callable (HTTP-routed) tool is a directory under `tools/`. The
+directory's `mod.rs` is the orchestrator — it owns `run()`, the shared
+result struct, and the merge — and each upstream provider is a separate file
+beside it. Single-source tools are just a `mod.rs`.
+
 ```
 src/
-  lib.rs                  # entry, router, telemetry wrapper
-  util.rs                 # fetch w/ timeout + helpers
-  telemetry.rs            # optional per-request POST to a webhook
-  docs.rs                 # /docs HTML
+  lib.rs                       # entry, router, telemetry wrapper
+  http.rs                      # request builder + fetch helpers (get_text/get_json/get_typed)
+  cache.rs                     # body-keyed edge cache wrapper (cache_or)
+  text.rs                      # HTML/entity stripping, tag/attr extraction, truncate
+  telemetry.rs                 # optional per-request POST to a webhook
+  docs.rs                      # /docs HTML
   tools/
-    search_web.rs         # Exa Search API w/ DuckDuckGo Lite fallback
-    search_news.rs        # Google News RSS
-    fetch_url.rs          # Jina Reader + raw fallback
-    encyclopedia.rs       # Wikipedia + Grokipedia
-    prediction_markets.rs # Polymarket + Manifold + Kalshi
-    pentagon_pizza.rs     # pentagon pizza index
-    breaking_news.rs      # multi-feed RSS, entity-blocked Jaccard clustering
+    mod.rs                     # callable-tool module list + generic interleave()
+    search_web/
+      mod.rs                   # Exa, else keyless fallback chain
+      exa.rs                   # Exa Search API
+      mojeek.rs                # Mojeek scrape (keyless, primary fallback)
+      duckduckgo.rs            # DuckDuckGo Lite scrape (keyless)
+      marginalia.rs            # Marginalia public JSON API (keyless)
+    search_news/mod.rs         # Bing News RSS
+    fetch_url/mod.rs           # Jina Reader + raw fallback
+    encyclopedia/
+      mod.rs                   # merges Wikipedia + Grokipedia
+      wikipedia.rs
+      grokipedia.rs
+    prediction_markets/
+      mod.rs                   # merges Polymarket + Manifold + Kalshi
+      polymarket.rs
+      manifold.rs
+      kalshi.rs
+    pentagon_pizza/mod.rs      # pentagon pizza index
+    stock_quote/mod.rs         # Finnhub quotes
+    breaking_news/
+      mod.rs                   # multi-feed RSS, entity-blocked Jaccard clustering
+      extract.rs               # tokenize / entities / headline cleanup / jaccard
+      dates.rs                 # RFC-2822 pubDate parsing
 ```
 
 ## Build & deploy
@@ -85,7 +112,9 @@ secret put`):
 | `TELEMETRY_AUTH` | no  | Sent as `Authorization: Bearer …` and `apikey: …`. |
 
 For `/v1/search_web`, set `EXA_API_KEY` (var or secret) to use the Exa
-Search API. If unset, the endpoint falls back to scraping DuckDuckGo Lite.
+Search API. If unset, the endpoint falls back to a keyless chain — Mojeek,
+then DuckDuckGo Lite, then the Marginalia public API — returning the first
+provider's non-empty results.
 
 Body shape:
 
@@ -98,7 +127,7 @@ response to the caller. If `TELEMETRY_URL` is unset, no record is sent.
 
 ## Adding a tool
 
-1. New file `src/tools/<name>.rs` exporting `pub async fn run(req: Request) -> Result<Response>`.
+1. New directory `src/tools/<name>/` with a `mod.rs` exporting `pub async fn run(req: Request) -> Result<Response>`. Put any per-provider subtools in sibling files inside that directory.
 2. Add `pub mod <name>;` to `src/tools/mod.rs`.
 3. Add a `.post_async("/v1/<name>", …)` line to the router in `src/lib.rs`.
 
@@ -109,13 +138,13 @@ response to the caller. If `TELEMETRY_URL` is unset, no record is sent.
 - **Errors as HTTP 200 + `{error}`.** Upstream failures surface as a soft
   error so the LLM doesn't trigger a retry loop. Bad input → 4xx; worker
   bugs → 5xx.
-- **Upstream timeouts** via `AbortController` in `src/util.rs` (6–20s).
+- **Upstream timeouts** via a `select` race against a `Delay` in
+  `src/http.rs` (6–20s).
 - **No `unsafe`, no `panic!` in handler paths.** Surface failures via the
   error JSON.
 - **No `scraper` / `html5ever` / `regex` deps.** They inflate the WASM
   bundle. Use byte-pattern matching + `quick-xml` instead. Current deps:
-  `worker`, `serde`, `serde_json`, `quick-xml`, `urlencoding`, `futures`,
-  `once_cell`.
+  `worker`, `serde`, `serde_json`, `quick-xml`, `urlencoding`, `futures`.
 - **Structured JSON, not preformatted strings.** Callers render however
   they like.
 

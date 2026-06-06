@@ -36,6 +36,10 @@ check search_news       /v1/search_news       '{"query":"bitcoin","limit":3}'   
 check fetch_url         /v1/fetch_url         '{"url":"https://www.example.com","max_chars":500}' '.text    | type == "string" and length > 0'
 check encyclopedia_search /v1/encyclopedia_search '{"query":"2028 United States presidential election","limit":3}' '.results | type == "array" and length > 0'
 check prediction_market_search /v1/prediction_market_search '{"query":"2028 presidential election","limit":3}' '.results | type == "array"'
+check breaking_news     /v1/breaking_news     '{}'                                               '.stories | type == "array"'
+check pentagon_pizza    /v1/pentagon_pizza    '{}'                                               '.defcon_level | type == "number"'
+# stock_quote needs FINNHUB_API_KEY configured on the worker:
+check stock_quote       /v1/stock_quote       '{"symbols":["AAPL"]}'                             '.quotes | type == "array"'
 ```
 
 Override `BASE` to test a deployed instance:
@@ -58,5 +62,5 @@ done
 - Endpoints always return HTTP 200. Upstream failures come back as
   `{"error":"..."}` — a FAIL here means the JSON shape check failed (either
   error payload or malformed response).
-- `search_news` sometimes 503s upstream from Google News — retry before
+- `search_news` sometimes 503s upstream from Bing News — retry before
   calling it broken.
