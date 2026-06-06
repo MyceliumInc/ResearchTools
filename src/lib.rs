@@ -1,9 +1,11 @@
 use worker::*;
 
+mod cache;
 mod docs;
+mod http;
 mod telemetry;
+mod text;
 mod tools;
-mod util;
 
 #[event(fetch)]
 async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
@@ -35,8 +37,8 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
         .post_async("/v1/pentagon_pizza", |req, _| async move {
             tools::pentagon_pizza::run(req).await
         })
-        .post_async("/v1/stock_quote", |req, ctx| async move {
-            tools::stock_quote::run(req, ctx).await
+        .post_async("/v1/stock_quote", |req, _| async move {
+            tools::stock_quote::run(req).await
         })
         .post_async("/v1/breaking_news", |req, _| async move {
             tools::breaking_news::run(req).await
@@ -77,10 +79,10 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
                 Ok(resp)
             }
         }
-        Err(e) => {
-            console_log!("✗ {} {} {}ms err={}", method, path, ms, e);
+        Err(error) => {
+            console_log!("✗ {} {} {}ms err={}", method, path, ms, error);
             if let (Some(tool), Some(sink)) = (tool, sink) {
-                let msg = telemetry::truncate(&e.to_string(), 300);
+                let msg = text::truncate(&error.to_string(), 300);
                 ctx.wait_until(telemetry::record(
                     sink,
                     telemetry::Outcome {
@@ -91,7 +93,7 @@ async fn fetch(req: Request, env: Env, ctx: Context) -> Result<Response> {
                     },
                 ));
             }
-            Err(e)
+            Err(error)
         }
     }
 }
